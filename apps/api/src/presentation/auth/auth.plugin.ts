@@ -1,15 +1,15 @@
 import { Elysia } from "elysia";
-import type { SignUpUseCase } from "../../application/auth/sign-up.use-case";
-import type { SignInUseCase } from "../../application/auth/sign-in.use-case";
-import type { RevalidateUseCase } from "../../application/auth/revalidate.use-case";
-import type { ResetPasswordUseCase } from "../../application/auth/reset-password.use-case";
 import type { ConfirmResetPasswordUseCase } from "../../application/auth/confirm-reset-password.use-case";
+import type { ResetPasswordUseCase } from "../../application/auth/reset-password.use-case";
+import type { RevalidateUseCase } from "../../application/auth/revalidate.use-case";
+import type { SignInUseCase } from "../../application/auth/sign-in.use-case";
+import type { SignUpUseCase } from "../../application/auth/sign-up.use-case";
 import {
-  SignUpBody,
-  SignInBody,
-  RevalidateBody,
-  ResetPasswordBody,
   ConfirmResetPasswordBody,
+  ResetPasswordBody,
+  RevalidateBody,
+  SignInBody,
+  SignUpBody,
 } from "./auth.schemas";
 
 interface AuthUseCases {
@@ -26,15 +26,21 @@ export const authPlugin = (useCases: AuthUseCases) =>
       "/signup",
       async ({ body, set }) => {
         try {
-          const result = await useCases.signUp.execute(body.email, body.password);
+          const result = await useCases.signUp.execute(
+            body.email,
+            body.password,
+          );
           set.status = 201;
           return {
             user: result.user,
             accessToken: result.accessToken,
             refreshToken: result.refreshToken,
           };
-        } catch (error: any) {
-          if (error.message?.includes("already registered")) {
+        } catch (error: unknown) {
+          if (
+            error instanceof Error &&
+            error.message?.includes("already registered")
+          ) {
             set.status = 409;
             return { error: "Email already registered" };
           }
@@ -47,9 +53,12 @@ export const authPlugin = (useCases: AuthUseCases) =>
       "/signin",
       async ({ body, set }) => {
         try {
-          const tokens = await useCases.signIn.execute(body.email, body.password);
+          const tokens = await useCases.signIn.execute(
+            body.email,
+            body.password,
+          );
           return tokens;
-        } catch (error: any) {
+        } catch {
           set.status = 401;
           return { error: "Invalid credentials" };
         }
@@ -62,7 +71,7 @@ export const authPlugin = (useCases: AuthUseCases) =>
         try {
           const tokens = await useCases.revalidate.execute(body.refreshToken);
           return tokens;
-        } catch (error: any) {
+        } catch {
           set.status = 401;
           return { error: "Invalid refresh token" };
         }
@@ -85,9 +94,12 @@ export const authPlugin = (useCases: AuthUseCases) =>
       "/reset-password/confirm",
       async ({ body, set }) => {
         try {
-          await useCases.confirmResetPassword.execute(body.token, body.password);
+          await useCases.confirmResetPassword.execute(
+            body.token,
+            body.password,
+          );
           return { message: "Password reset successfully" };
-        } catch (error: any) {
+        } catch {
           set.status = 401;
           return { error: "Invalid or expired token" };
         }
