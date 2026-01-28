@@ -62,8 +62,21 @@ export const anamnesisPlugin = (useCases: AnamnesisUseCases) =>
     )
     .put(
       "/templates/:id",
-      async ({ params, body }) => {
-        return useCases.updateTemplate.execute(params.id, body.name);
+      async ({ params, body, set }) => {
+        try {
+          return await useCases.updateTemplate.execute(params.id, body.name);
+        } catch (error: unknown) {
+          if (
+            error !== null &&
+            typeof error === "object" &&
+            "code" in error &&
+            (error as { code: string }).code === "PGRST116"
+          ) {
+            set.status = 404;
+            return { error: "Template not found" };
+          }
+          throw error;
+        }
       },
       { params: TemplateIdParams, body: UpdateTemplateBody },
     )
@@ -82,8 +95,21 @@ export const anamnesisPlugin = (useCases: AnamnesisUseCases) =>
     )
     .put(
       "/groups/:id",
-      async ({ params, body }) => {
-        return useCases.updateGroup.execute(params.id, body);
+      async ({ params, body, set }) => {
+        try {
+          return await useCases.updateGroup.execute(params.id, body);
+        } catch (error: unknown) {
+          if (
+            error !== null &&
+            typeof error === "object" &&
+            "code" in error &&
+            (error as { code: string }).code === "PGRST116"
+          ) {
+            set.status = 404;
+            return { error: "Group not found" };
+          }
+          throw error;
+        }
       },
       { params: GroupIdParams, body: UpdateGroupBody },
     )
@@ -113,8 +139,21 @@ export const anamnesisPlugin = (useCases: AnamnesisUseCases) =>
     )
     .put(
       "/questions/:id",
-      async ({ params, body }) => {
-        return useCases.updateQuestion.execute(params.id, body);
+      async ({ params, body, set }) => {
+        try {
+          return await useCases.updateQuestion.execute(params.id, body);
+        } catch (error: unknown) {
+          if (
+            error !== null &&
+            typeof error === "object" &&
+            "code" in error &&
+            (error as { code: string }).code === "PGRST116"
+          ) {
+            set.status = 404;
+            return { error: "Question not found" };
+          }
+          throw error;
+        }
       },
       { params: QuestionIdParams, body: UpdateQuestionBody },
     )
