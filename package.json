@@ -3,11 +3,14 @@
   "private": true,
   "workspaces": ["apps/*", "packages/*"],
   "scripts": {
+    "dev": "concurrently --names api --prefix-colors blue \"bun run dev:api\"",
+    "dev:api": "bun --filter @projecthor/api dev",
     "lint": "biome lint",
     "format": "biome format --write",
     "check": "biome check --write"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.13"
+    "@biomejs/biome": "^2.3.13",
+    "concurrently": "^9.2.1"
   }
 }
