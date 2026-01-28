@@ -4,6 +4,9 @@
   "workspaces": {
     "": {
       "name": "projecthor",
+      "dependencies": {
+        "@supabase/supabase-js": "^2.93.2",
+      },
       "devDependencies": {
         "@biomejs/biome": "^2.3.13",
         "concurrently": "^9.2.1",
@@ -14,8 +17,10 @@
       "version": "0.0.0",
       "dependencies": {
         "@sinclair/typebox": "^0.34.48",
-        "@supabase/supabase-js": "^2.93.2",
         "elysia": "^1.2",
+      },
+      "peerDependencies": {
+        "@supabase/supabase-js": "^2.93.2",
       },
     },
     "apps/web": {

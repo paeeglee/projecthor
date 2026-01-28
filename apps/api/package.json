@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "@sinclair/typebox": "^0.34.48",
-    "@supabase/supabase-js": "^2.93.2",
     "elysia": "^1.2"
+  },
+  "peerDependencies": {
+    "@supabase/supabase-js": "^2.93.2"
   }
 }

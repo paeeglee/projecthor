@@ -1,4 +1,4 @@
-import { Type, type Static } from "@sinclair/typebox";
+import { type Static, Type } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 
 const EnvSchema = Type.Object({
@@ -16,7 +16,9 @@ function loadEnv(): Env {
 
   if (!Value.Check(EnvSchema, defaulted)) {
     const errors = [...Value.Errors(EnvSchema, defaulted)];
-    const messages = errors.map((e) => `  - ${e.path}: ${e.message}`).join("\n");
+    const messages = errors
+      .map((e) => `  - ${e.path}: ${e.message}`)
+      .join("\n");
     throw new Error(`Invalid environment variables:\n${messages}`);
   }
 
