@@ -19,10 +19,14 @@ export class AuthRepository implements IAuthRepository {
       throw new Error("Sign up failed: no user or session returned");
     }
 
+    if (!data.user.email) {
+      throw new Error("Sign up failed: no email returned for user");
+    }
+
     return {
       user: {
         id: data.user.id,
-        email: data.user.email!,
+        email: data.user.email,
       },
       accessToken: data.session.access_token,
       refreshToken: data.session.refresh_token,
@@ -72,6 +76,8 @@ export class AuthRepository implements IAuthRepository {
     }
   }
 
+  // NOTE: Two-step operation. If verifyOtp succeeds but updateUser fails,
+  // the OTP is consumed and the user must request a new reset email.
   async confirmResetPassword(token: string, password: string): Promise<void> {
     const { error: verifyError } = await this.supabase.auth.verifyOtp({
       token_hash: token,
