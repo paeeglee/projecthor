@@ -1,6 +1,7 @@
 import { Elysia } from "elysia";
 import { container } from "./container";
 import { env } from "./infrastructure/config/env";
+import { anamnesisPlugin } from "./presentation/anamnesis/anamnesis.plugin";
 import { authPlugin } from "./presentation/auth/auth.plugin";
 import { exercisePlugin } from "./presentation/exercise/exercise.plugin";
 import { healthPlugin } from "./presentation/health/health.plugin";
@@ -19,6 +20,21 @@ new Elysia()
     }),
   )
   .use(exercisePlugin(container.getExerciseBySlugUseCase))
+  .use(
+    anamnesisPlugin({
+      createTemplate: container.createTemplateUseCase,
+      getTemplate: container.getTemplateUseCase,
+      updateTemplate: container.updateTemplateUseCase,
+      createGroup: container.createGroupUseCase,
+      updateGroup: container.updateGroupUseCase,
+      deleteGroup: container.deleteGroupUseCase,
+      createQuestion: container.createQuestionUseCase,
+      updateQuestion: container.updateQuestionUseCase,
+      deleteQuestion: container.deleteQuestionUseCase,
+      getFormSchema: container.getFormSchemaUseCase,
+      submitResponse: container.submitResponseUseCase,
+    }),
+  )
   .listen(port, () => {
     console.log(`Server running on port ${port}`);
   });
