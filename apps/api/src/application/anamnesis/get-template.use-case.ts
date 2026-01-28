@@ -1,8 +1,8 @@
 import type { AnamnesisGroup } from "../../domain/anamnesis/anamnesis-group.entity";
-import type { AnamnesisQuestion } from "../../domain/anamnesis/anamnesis-question.entity";
-import type { AnamnesisTemplate } from "../../domain/anamnesis/anamnesis-template.entity";
 import type { IAnamnesisGroupRepository } from "../../domain/anamnesis/anamnesis-group.repository";
+import type { AnamnesisQuestion } from "../../domain/anamnesis/anamnesis-question.entity";
 import type { IAnamnesisQuestionRepository } from "../../domain/anamnesis/anamnesis-question.repository";
+import type { AnamnesisTemplate } from "../../domain/anamnesis/anamnesis-template.entity";
 import type { IAnamnesisTemplateRepository } from "../../domain/anamnesis/anamnesis-template.repository";
 
 interface TemplateWithDetails {

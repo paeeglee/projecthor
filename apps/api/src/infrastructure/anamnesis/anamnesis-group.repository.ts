@@ -5,7 +5,11 @@ import type { IAnamnesisGroupRepository } from "../../domain/anamnesis/anamnesis
 export class AnamnesisGroupRepository implements IAnamnesisGroupRepository {
   constructor(private readonly supabase: SupabaseClient) {}
 
-  async create(templateId: string, name: string, displayOrder: number): Promise<AnamnesisGroup> {
+  async create(
+    templateId: string,
+    name: string,
+    displayOrder: number,
+  ): Promise<AnamnesisGroup> {
     const { data, error } = await this.supabase
       .from("anamnesis_groups")
       .insert({ template_id: templateId, name, display_order: displayOrder })
@@ -41,10 +45,14 @@ export class AnamnesisGroupRepository implements IAnamnesisGroupRepository {
     return (data ?? []).map((row) => this.toEntity(row));
   }
 
-  async update(id: string, updateData: { name?: string; displayOrder?: number }): Promise<AnamnesisGroup> {
+  async update(
+    id: string,
+    updateData: { name?: string; displayOrder?: number },
+  ): Promise<AnamnesisGroup> {
     const dbData: Record<string, unknown> = {};
     if (updateData.name !== undefined) dbData.name = updateData.name;
-    if (updateData.displayOrder !== undefined) dbData.display_order = updateData.displayOrder;
+    if (updateData.displayOrder !== undefined)
+      dbData.display_order = updateData.displayOrder;
 
     const { data, error } = await this.supabase
       .from("anamnesis_groups")

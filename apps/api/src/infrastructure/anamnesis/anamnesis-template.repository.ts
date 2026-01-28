@@ -2,7 +2,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AnamnesisTemplate } from "../../domain/anamnesis/anamnesis-template.entity";
 import type { IAnamnesisTemplateRepository } from "../../domain/anamnesis/anamnesis-template.repository";
 
-export class AnamnesisTemplateRepository implements IAnamnesisTemplateRepository {
+export class AnamnesisTemplateRepository
+  implements IAnamnesisTemplateRepository
+{
   constructor(private readonly supabase: SupabaseClient) {}
 
   async create(name: string): Promise<AnamnesisTemplate> {
@@ -32,12 +34,20 @@ export class AnamnesisTemplateRepository implements IAnamnesisTemplateRepository
 
   async update(
     id: string,
-    updateData: { name?: string; jsonSchema?: Record<string, unknown>; uiSchema?: Record<string, unknown> },
+    updateData: {
+      name?: string;
+      jsonSchema?: Record<string, unknown>;
+      uiSchema?: Record<string, unknown>;
+    },
   ): Promise<AnamnesisTemplate> {
-    const dbData: Record<string, unknown> = { updated_at: new Date().toISOString() };
+    const dbData: Record<string, unknown> = {
+      updated_at: new Date().toISOString(),
+    };
     if (updateData.name !== undefined) dbData.name = updateData.name;
-    if (updateData.jsonSchema !== undefined) dbData.json_schema = updateData.jsonSchema;
-    if (updateData.uiSchema !== undefined) dbData.ui_schema = updateData.uiSchema;
+    if (updateData.jsonSchema !== undefined)
+      dbData.json_schema = updateData.jsonSchema;
+    if (updateData.uiSchema !== undefined)
+      dbData.ui_schema = updateData.uiSchema;
 
     const { data, error } = await this.supabase
       .from("anamnesis_templates")

@@ -6,7 +6,9 @@ interface FormSchema {
 }
 
 export class GetFormSchemaUseCase {
-  constructor(private readonly templateRepository: IAnamnesisTemplateRepository) {}
+  constructor(
+    private readonly templateRepository: IAnamnesisTemplateRepository,
+  ) {}
 
   async execute(templateId: string): Promise<FormSchema | null> {
     const template = await this.templateRepository.findById(templateId);

@@ -15,14 +15,20 @@ function slugify(text: string): string {
     .replace(/^_|_$/g, "");
 }
 
-function questionToJsonSchema(question: AnamnesisQuestion): Record<string, unknown> {
+function questionToJsonSchema(
+  question: AnamnesisQuestion,
+): Record<string, unknown> {
   switch (question.fieldType) {
     case "text":
       return { type: "string", title: question.label };
     case "boolean":
       return { type: "boolean", title: question.label };
     case "single_choice":
-      return { type: "string", title: question.label, enum: question.options ?? [] };
+      return {
+        type: "string",
+        title: question.label,
+        enum: question.options ?? [],
+      };
     case "multi_choice":
       return {
         type: "array",
@@ -39,7 +45,9 @@ export function generateSchemas(
   groups: AnamnesisGroup[],
   questions: AnamnesisQuestion[],
 ): GeneratedSchemas {
-  const sortedGroups = [...groups].sort((a, b) => a.displayOrder - b.displayOrder);
+  const sortedGroups = [...groups].sort(
+    (a, b) => a.displayOrder - b.displayOrder,
+  );
   const questionsByGroup = new Map<string, AnamnesisQuestion[]>();
 
   for (const q of questions) {

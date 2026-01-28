@@ -2,7 +2,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AnamnesisQuestion } from "../../domain/anamnesis/anamnesis-question.entity";
 import type { IAnamnesisQuestionRepository } from "../../domain/anamnesis/anamnesis-question.repository";
 
-export class AnamnesisQuestionRepository implements IAnamnesisQuestionRepository {
+export class AnamnesisQuestionRepository
+  implements IAnamnesisQuestionRepository
+{
   constructor(private readonly supabase: SupabaseClient) {}
 
   async create(input: {
@@ -68,14 +70,23 @@ export class AnamnesisQuestionRepository implements IAnamnesisQuestionRepository
 
   async update(
     id: string,
-    updateData: { label?: string; fieldType?: string; options?: string[]; required?: boolean; displayOrder?: number },
+    updateData: {
+      label?: string;
+      fieldType?: string;
+      options?: string[];
+      required?: boolean;
+      displayOrder?: number;
+    },
   ): Promise<AnamnesisQuestion> {
     const dbData: Record<string, unknown> = {};
     if (updateData.label !== undefined) dbData.label = updateData.label;
-    if (updateData.fieldType !== undefined) dbData.field_type = updateData.fieldType;
+    if (updateData.fieldType !== undefined)
+      dbData.field_type = updateData.fieldType;
     if (updateData.options !== undefined) dbData.options = updateData.options;
-    if (updateData.required !== undefined) dbData.required = updateData.required;
-    if (updateData.displayOrder !== undefined) dbData.display_order = updateData.displayOrder;
+    if (updateData.required !== undefined)
+      dbData.required = updateData.required;
+    if (updateData.displayOrder !== undefined)
+      dbData.display_order = updateData.displayOrder;
 
     const { data, error } = await this.supabase
       .from("anamnesis_questions")

@@ -18,10 +18,17 @@ export class DeleteQuestionUseCase {
     await this.questionRepository.delete(id);
 
     if (group) {
-      const groups = await this.groupRepository.findByTemplateId(group.templateId);
-      const questions = await this.questionRepository.findByTemplateId(group.templateId);
+      const groups = await this.groupRepository.findByTemplateId(
+        group.templateId,
+      );
+      const questions = await this.questionRepository.findByTemplateId(
+        group.templateId,
+      );
       const { jsonSchema, uiSchema } = generateSchemas(groups, questions);
-      await this.templateRepository.update(group.templateId, { jsonSchema, uiSchema });
+      await this.templateRepository.update(group.templateId, {
+        jsonSchema,
+        uiSchema,
+      });
     }
   }
 }

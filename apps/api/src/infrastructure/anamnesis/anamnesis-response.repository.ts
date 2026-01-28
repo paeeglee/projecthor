@@ -2,7 +2,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AnamnesisResponse } from "../../domain/anamnesis/anamnesis-response.entity";
 import type { IAnamnesisResponseRepository } from "../../domain/anamnesis/anamnesis-response.repository";
 
-export class AnamnesisResponseRepository implements IAnamnesisResponseRepository {
+export class AnamnesisResponseRepository
+  implements IAnamnesisResponseRepository
+{
   constructor(private readonly supabase: SupabaseClient) {}
 
   async create(input: {
@@ -24,7 +26,10 @@ export class AnamnesisResponseRepository implements IAnamnesisResponseRepository
     return this.toEntity(data);
   }
 
-  async findByTemplateAndAthlete(templateId: string, athleteId: string): Promise<AnamnesisResponse | null> {
+  async findByTemplateAndAthlete(
+    templateId: string,
+    athleteId: string,
+  ): Promise<AnamnesisResponse | null> {
     const { data, error } = await this.supabase
       .from("anamnesis_responses")
       .select()

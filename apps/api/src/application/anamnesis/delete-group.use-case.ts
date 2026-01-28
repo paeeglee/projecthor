@@ -18,7 +18,8 @@ export class DeleteGroupUseCase {
     await this.groupRepository.delete(id);
 
     const groups = await this.groupRepository.findByTemplateId(templateId);
-    const questions = await this.questionRepository.findByTemplateId(templateId);
+    const questions =
+      await this.questionRepository.findByTemplateId(templateId);
     const { jsonSchema, uiSchema } = generateSchemas(groups, questions);
     await this.templateRepository.update(templateId, { jsonSchema, uiSchema });
   }

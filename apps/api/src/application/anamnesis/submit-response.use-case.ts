@@ -8,11 +8,18 @@ export class SubmitResponseUseCase {
     private readonly templateRepository: IAnamnesisTemplateRepository,
   ) {}
 
-  async execute(templateId: string, athleteId: string, answers: Record<string, unknown>): Promise<AnamnesisResponse> {
+  async execute(
+    templateId: string,
+    athleteId: string,
+    answers: Record<string, unknown>,
+  ): Promise<AnamnesisResponse> {
     const template = await this.templateRepository.findById(templateId);
     if (!template) throw new Error("Template not found");
 
-    const existing = await this.responseRepository.findByTemplateAndAthlete(templateId, athleteId);
+    const existing = await this.responseRepository.findByTemplateAndAthlete(
+      templateId,
+      athleteId,
+    );
     if (existing) throw new Error("Response already submitted");
 
     return this.responseRepository.create({ templateId, athleteId, answers });

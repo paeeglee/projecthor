@@ -11,11 +11,20 @@ export class CreateGroupUseCase {
     private readonly questionRepository: IAnamnesisQuestionRepository,
   ) {}
 
-  async execute(templateId: string, name: string, displayOrder: number): Promise<AnamnesisGroup> {
-    const group = await this.groupRepository.create(templateId, name, displayOrder);
+  async execute(
+    templateId: string,
+    name: string,
+    displayOrder: number,
+  ): Promise<AnamnesisGroup> {
+    const group = await this.groupRepository.create(
+      templateId,
+      name,
+      displayOrder,
+    );
 
     const groups = await this.groupRepository.findByTemplateId(templateId);
-    const questions = await this.questionRepository.findByTemplateId(templateId);
+    const questions =
+      await this.questionRepository.findByTemplateId(templateId);
     const { jsonSchema, uiSchema } = generateSchemas(groups, questions);
     await this.templateRepository.update(templateId, { jsonSchema, uiSchema });
 
