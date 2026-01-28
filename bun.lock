@@ -1,0 +1,22 @@
+{
+  "lockfileVersion": 1,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "projecthor",
+    },
+    "apps/api": {
+      "name": "@projecthor/api",
+      "version": "0.0.0",
+    },
+    "apps/web": {
+      "name": "@projecthor/web",
+      "version": "0.0.0",
+    },
+  },
+  "packages": {
+    "@projecthor/api": ["@projecthor/api@workspace:apps/api"],
+
+    "@projecthor/web": ["@projecthor/web@workspace:apps/web"],
+  }
+}
