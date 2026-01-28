@@ -1,6 +1,5 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import type { GetExerciseBySlugUseCase } from "../../application/exercise/get-exercise-by-slug.use-case";
-import { ExerciseParams } from "./exercise.schemas";
 
 export const exercisePlugin = (useCase: GetExerciseBySlugUseCase) =>
   new Elysia({ prefix: "/exercises" }).get(
@@ -28,5 +27,9 @@ export const exercisePlugin = (useCase: GetExerciseBySlugUseCase) =>
         images: exercise.images,
       };
     },
-    { params: ExerciseParams },
+    {
+      params: t.Object({
+        slug: t.String({ minLength: 1 }),
+      }),
+    },
   );
