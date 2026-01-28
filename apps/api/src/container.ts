@@ -16,6 +16,18 @@ import { SignInUseCase } from "./application/auth/sign-in.use-case";
 import { SignUpUseCase } from "./application/auth/sign-up.use-case";
 import { GetExerciseBySlugUseCase } from "./application/exercise/get-exercise-by-slug.use-case";
 import { GetHealthStatusUseCase } from "./application/health/get-health-status.use-case";
+import { AddExerciseToGroupUseCase } from "./application/workout/add-exercise-to-group.use-case";
+import { AddWorkoutGroupUseCase } from "./application/workout/add-workout-group.use-case";
+import { CreateWorkoutPlanUseCase } from "./application/workout/create-workout-plan.use-case";
+import { DeactivateWorkoutPlanUseCase } from "./application/workout/deactivate-workout-plan.use-case";
+import { GetWorkoutHistoryUseCase } from "./application/workout/get-workout-history.use-case";
+import { GetWorkoutPlanUseCase } from "./application/workout/get-workout-plan.use-case";
+import { LogWorkoutUseCase } from "./application/workout/log-workout.use-case";
+import { RemoveExerciseFromGroupUseCase } from "./application/workout/remove-exercise-from-group.use-case";
+import { RemoveWorkoutGroupUseCase } from "./application/workout/remove-workout-group.use-case";
+import { UpdateGroupExerciseUseCase } from "./application/workout/update-group-exercise.use-case";
+import { UpdateWorkoutGroupUseCase } from "./application/workout/update-workout-group.use-case";
+import { UpdateWorkoutPlanUseCase } from "./application/workout/update-workout-plan.use-case";
 import { AnamnesisGroupRepository } from "./infrastructure/anamnesis/anamnesis-group.repository";
 import { AnamnesisQuestionRepository } from "./infrastructure/anamnesis/anamnesis-question.repository";
 import { AnamnesisResponseRepository } from "./infrastructure/anamnesis/anamnesis-response.repository";
@@ -24,6 +36,10 @@ import { AuthRepository } from "./infrastructure/auth/auth.repository";
 import { ExerciseRepository } from "./infrastructure/exercise/exercise.repository";
 import { HealthRepository } from "./infrastructure/health/health.repository";
 import { supabase, supabaseAdmin } from "./infrastructure/supabase/client";
+import { WorkoutExerciseRepository } from "./infrastructure/workout/workout-exercise.repository";
+import { WorkoutGroupRepository } from "./infrastructure/workout/workout-group.repository";
+import { WorkoutLogRepository } from "./infrastructure/workout/workout-log.repository";
+import { WorkoutPlanRepository } from "./infrastructure/workout/workout-plan.repository";
 
 const healthRepository = new HealthRepository();
 const getHealthStatusUseCase = new GetHealthStatusUseCase(healthRepository);
@@ -102,6 +118,48 @@ const submitResponseUseCase = new SubmitResponseUseCase(
   anamnesisTemplateRepository,
 );
 
+const workoutPlanRepository = new WorkoutPlanRepository(supabaseAdmin);
+const workoutGroupRepository = new WorkoutGroupRepository(supabaseAdmin);
+const workoutExerciseRepository = new WorkoutExerciseRepository(supabaseAdmin);
+const workoutLogRepository = new WorkoutLogRepository(supabaseAdmin);
+
+const createWorkoutPlanUseCase = new CreateWorkoutPlanUseCase(
+  workoutPlanRepository,
+);
+const getWorkoutPlanUseCase = new GetWorkoutPlanUseCase(
+  workoutPlanRepository,
+  workoutGroupRepository,
+  workoutExerciseRepository,
+);
+const updateWorkoutPlanUseCase = new UpdateWorkoutPlanUseCase(
+  workoutPlanRepository,
+);
+const deactivateWorkoutPlanUseCase = new DeactivateWorkoutPlanUseCase(
+  workoutPlanRepository,
+);
+const addWorkoutGroupUseCase = new AddWorkoutGroupUseCase(
+  workoutGroupRepository,
+);
+const updateWorkoutGroupUseCase = new UpdateWorkoutGroupUseCase(
+  workoutGroupRepository,
+);
+const removeWorkoutGroupUseCase = new RemoveWorkoutGroupUseCase(
+  workoutGroupRepository,
+);
+const addExerciseToGroupUseCase = new AddExerciseToGroupUseCase(
+  workoutExerciseRepository,
+);
+const updateGroupExerciseUseCase = new UpdateGroupExerciseUseCase(
+  workoutExerciseRepository,
+);
+const removeExerciseFromGroupUseCase = new RemoveExerciseFromGroupUseCase(
+  workoutExerciseRepository,
+);
+const logWorkoutUseCase = new LogWorkoutUseCase(workoutLogRepository);
+const getWorkoutHistoryUseCase = new GetWorkoutHistoryUseCase(
+  workoutLogRepository,
+);
+
 export const container = {
   getHealthStatusUseCase,
   signUpUseCase,
@@ -121,4 +179,16 @@ export const container = {
   deleteQuestionUseCase,
   getFormSchemaUseCase,
   submitResponseUseCase,
+  createWorkoutPlanUseCase,
+  getWorkoutPlanUseCase,
+  updateWorkoutPlanUseCase,
+  deactivateWorkoutPlanUseCase,
+  addWorkoutGroupUseCase,
+  updateWorkoutGroupUseCase,
+  removeWorkoutGroupUseCase,
+  addExerciseToGroupUseCase,
+  updateGroupExerciseUseCase,
+  removeExerciseFromGroupUseCase,
+  logWorkoutUseCase,
+  getWorkoutHistoryUseCase,
 };

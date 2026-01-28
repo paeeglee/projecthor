@@ -5,6 +5,7 @@ import { anamnesisPlugin } from "./presentation/anamnesis/anamnesis.plugin";
 import { authPlugin } from "./presentation/auth/auth.plugin";
 import { exercisePlugin } from "./presentation/exercise/exercise.plugin";
 import { healthPlugin } from "./presentation/health/health.plugin";
+import { workoutPlugin } from "./presentation/workout/workout.plugin";
 
 const port = Number(env.PORT);
 
@@ -33,6 +34,22 @@ new Elysia()
       deleteQuestion: container.deleteQuestionUseCase,
       getFormSchema: container.getFormSchemaUseCase,
       submitResponse: container.submitResponseUseCase,
+    }),
+  )
+  .use(
+    workoutPlugin({
+      createPlan: container.createWorkoutPlanUseCase,
+      getPlan: container.getWorkoutPlanUseCase,
+      updatePlan: container.updateWorkoutPlanUseCase,
+      deactivatePlan: container.deactivateWorkoutPlanUseCase,
+      addGroup: container.addWorkoutGroupUseCase,
+      updateGroup: container.updateWorkoutGroupUseCase,
+      removeGroup: container.removeWorkoutGroupUseCase,
+      addExercise: container.addExerciseToGroupUseCase,
+      updateExercise: container.updateGroupExerciseUseCase,
+      removeExercise: container.removeExerciseFromGroupUseCase,
+      logWorkout: container.logWorkoutUseCase,
+      getHistory: container.getWorkoutHistoryUseCase,
     }),
   )
   .listen(port, () => {
