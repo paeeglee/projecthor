@@ -3,7 +3,7 @@ import { Elysia } from "elysia";
 import { container } from "./container";
 import { healthPlugin } from "./presentation/health/health.plugin";
 
-const port = env.PORT ?? 3000;
+const port = Number(env.PORT);
 
 new Elysia()
   .use(healthPlugin(container.getHealthStatusUseCase))
