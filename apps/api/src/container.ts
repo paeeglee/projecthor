@@ -174,6 +174,9 @@ const generateWorkoutUseCase = new GenerateWorkoutUseCase(
   anamnesisResponseRepository,
   anamnesisQuestionRepository,
   exerciseRepository,
+  workoutPlanRepository,
+  workoutGroupRepository,
+  workoutExerciseRepository,
 );
 
 export const container = {

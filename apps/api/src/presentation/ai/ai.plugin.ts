@@ -11,14 +11,18 @@ export const aiPlugin = ({ authMiddleware, generateWorkout }: AiPluginDeps) =>
     .use(authMiddleware)
     .post("/generate-workout", async ({ user, set }) => {
       try {
-        return await generateWorkout.execute(user.id);
+        await generateWorkout.execute(user.id);
+        set.status = 201;
       } catch (error: unknown) {
-        if (
-          error instanceof Error &&
-          error.message === "Anamnesis not found for athlete"
-        ) {
-          set.status = 404;
-          return { error: "Anamnesis not found for athlete" };
+        if (error instanceof Error) {
+          if (error.message === "Anamnesis not found for athlete") {
+            set.status = 404;
+            return { error: error.message };
+          }
+          if (error.message.startsWith("Exercise not found:")) {
+            set.status = 422;
+            return { error: error.message };
+          }
         }
         throw error;
       }

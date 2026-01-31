@@ -5,6 +5,9 @@ import type { AnamnesisResponse } from "../../domain/anamnesis/anamnesis-respons
 import type { IAnamnesisResponseRepository } from "../../domain/anamnesis/anamnesis-response.repository";
 import type { Exercise } from "../../domain/exercise/exercise.entity";
 import type { IExerciseRepository } from "../../domain/exercise/exercise.repository";
+import type { IWorkoutExerciseRepository } from "../../domain/workout/workout-exercise.repository";
+import type { IWorkoutGroupRepository } from "../../domain/workout/workout-group.repository";
+import type { IWorkoutPlanRepository } from "../../domain/workout/workout-plan.repository";
 import { jsonToToon } from "../../infrastructure/ai/toon-encoder";
 
 export class GenerateWorkoutUseCase {
@@ -13,9 +16,12 @@ export class GenerateWorkoutUseCase {
     private readonly anamnesisResponseRepository: IAnamnesisResponseRepository,
     private readonly anamnesisQuestionRepository: IAnamnesisQuestionRepository,
     private readonly exerciseRepository: IExerciseRepository,
+    private readonly workoutPlanRepository: IWorkoutPlanRepository,
+    private readonly workoutGroupRepository: IWorkoutGroupRepository,
+    private readonly workoutExerciseRepository: IWorkoutExerciseRepository,
   ) {}
 
-  async execute(athleteId: string): Promise<GeneratedWorkout> {
+  async execute(athleteId: string): Promise<void> {
     const anamnesis =
       await this.anamnesisResponseRepository.findByAthleteId(athleteId);
 
@@ -41,7 +47,63 @@ export class GenerateWorkoutUseCase {
       model: "gpt-4o",
     });
 
-    return JSON.parse(response.content) as GeneratedWorkout;
+    const generated = JSON.parse(response.content) as GeneratedWorkout;
+    await this.persistWorkout(athleteId, generated, exercises);
+  }
+
+  private async persistWorkout(
+    athleteId: string,
+    generated: GeneratedWorkout,
+    exercises: Exercise[],
+  ): Promise<void> {
+    const slugToId = new Map(exercises.map((e) => [e.slug, e.id]));
+
+    // Validate all slugs exist before writing anything
+    for (const group of generated.groups) {
+      for (const ex of group.exercises) {
+        if (!slugToId.has(ex.exerciseSlug)) {
+          throw new Error(`Exercise not found: ${ex.exerciseSlug}`);
+        }
+      }
+    }
+
+    // Deactivate existing plans and create new one
+    await this.workoutPlanRepository.deactivateAllByAthleteId(athleteId);
+    const plan = await this.workoutPlanRepository.create(
+      athleteId,
+      generated.name,
+    );
+
+    // Create groups and exercises
+    for (let gi = 0; gi < generated.groups.length; gi++) {
+      const genGroup = generated.groups[gi];
+      const group = await this.workoutGroupRepository.create(
+        plan.id,
+        genGroup.name,
+        gi,
+      );
+
+      for (let ei = 0; ei < genGroup.exercises.length; ei++) {
+        const genEx = genGroup.exercises[ei];
+        await this.workoutExerciseRepository.create({
+          workoutGroupId: group.id,
+          exerciseId: slugToId.get(genEx.exerciseSlug)!,
+          sets: genEx.sets,
+          reps: this.parseReps(genEx.reps),
+          displayOrder: ei,
+          restSeconds: genEx.restSeconds,
+          notes: genEx.notes,
+        });
+      }
+    }
+  }
+
+  private parseReps(reps: string): number {
+    const matches = reps.match(/\d+/g);
+    if (!matches || matches.length === 0) {
+      return 0;
+    }
+    return Number(matches[matches.length - 1]);
   }
 
   private buildSystemPrompt(exercises: Exercise[]): string {

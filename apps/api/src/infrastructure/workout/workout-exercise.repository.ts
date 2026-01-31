@@ -11,6 +11,8 @@ export class WorkoutExerciseRepository implements IWorkoutExerciseRepository {
     sets: number;
     reps: number;
     displayOrder: number;
+    restSeconds?: number;
+    notes?: string;
   }): Promise<WorkoutExercise> {
     const { data: row, error } = await this.supabase
       .from("workout_exercises")
@@ -20,6 +22,8 @@ export class WorkoutExerciseRepository implements IWorkoutExerciseRepository {
         sets: data.sets,
         reps: data.reps,
         display_order: data.displayOrder,
+        rest_seconds: data.restSeconds ?? null,
+        notes: data.notes ?? null,
       })
       .select()
       .single();
@@ -92,6 +96,8 @@ export class WorkoutExerciseRepository implements IWorkoutExerciseRepository {
       exerciseId: data.exercise_id as string,
       sets: data.sets as number,
       reps: data.reps as number,
+      restSeconds: (data.rest_seconds as number) ?? null,
+      notes: (data.notes as string) ?? null,
       displayOrder: data.display_order as number,
       createdAt: new Date(data.created_at as string),
       updatedAt: new Date(data.updated_at as string),

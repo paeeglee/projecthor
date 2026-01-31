@@ -7,6 +7,8 @@ export interface IWorkoutExerciseRepository {
     sets: number;
     reps: number;
     displayOrder: number;
+    restSeconds?: number;
+    notes?: string;
   }): Promise<WorkoutExercise>;
   findByGroupId(workoutGroupId: string): Promise<WorkoutExercise[]>;
   findById(id: string): Promise<WorkoutExercise | null>;
