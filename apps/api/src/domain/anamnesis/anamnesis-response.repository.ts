@@ -10,4 +10,5 @@ export interface IAnamnesisResponseRepository {
     templateId: string,
     athleteId: string,
   ): Promise<AnamnesisResponse | null>;
+  existsByAthleteId(athleteId: string): Promise<boolean>;
 }

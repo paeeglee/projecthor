@@ -47,8 +47,14 @@ const getHealthStatusUseCase = new GetHealthStatusUseCase(healthRepository);
 
 const authMiddlewareRepository = new AuthMiddlewareRepository(supabaseAdmin);
 const authRepository = new AuthRepository(supabase);
+const anamnesisResponseRepository = new AnamnesisResponseRepository(
+  supabaseAdmin,
+);
 const signUpUseCase = new SignUpUseCase(authRepository);
-const signInUseCase = new SignInUseCase(authRepository);
+const signInUseCase = new SignInUseCase(
+  authRepository,
+  anamnesisResponseRepository,
+);
 const revalidateUseCase = new RevalidateUseCase(authRepository);
 const resetPasswordUseCase = new ResetPasswordUseCase(authRepository);
 const confirmResetPasswordUseCase = new ConfirmResetPasswordUseCase(
@@ -65,9 +71,6 @@ const anamnesisTemplateRepository = new AnamnesisTemplateRepository(
 );
 const anamnesisGroupRepository = new AnamnesisGroupRepository(supabaseAdmin);
 const anamnesisQuestionRepository = new AnamnesisQuestionRepository(
-  supabaseAdmin,
-);
-const anamnesisResponseRepository = new AnamnesisResponseRepository(
   supabaseAdmin,
 );
 

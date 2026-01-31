@@ -44,6 +44,16 @@ export class AnamnesisResponseRepository
     return this.toEntity(data);
   }
 
+  async existsByAthleteId(athleteId: string): Promise<boolean> {
+    const { count, error } = await this.supabase
+      .from("anamnesis_responses")
+      .select("id", { count: "exact", head: true })
+      .eq("athlete_id", athleteId);
+
+    if (error) throw error;
+    return (count ?? 0) > 0;
+  }
+
   private toEntity(data: Record<string, unknown>): AnamnesisResponse {
     return {
       id: data.id as string,

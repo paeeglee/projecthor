@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { IAuthRepository } from "../../domain/auth/auth.repository";
-import type { AuthTokens, SignUpResult } from "../../domain/auth/auth.types";
+import type { SignUpResult } from "../../domain/auth/auth.types";
 
 export class AuthRepository implements IAuthRepository {
   constructor(private readonly supabase: SupabaseClient) {}
@@ -33,7 +33,7 @@ export class AuthRepository implements IAuthRepository {
     };
   }
 
-  async signIn(email: string, password: string): Promise<AuthTokens> {
+  async signIn(email: string, password: string): Promise<SignUpResult> {
     const { data, error } = await this.supabase.auth.signInWithPassword({
       email,
       password,
@@ -43,7 +43,15 @@ export class AuthRepository implements IAuthRepository {
       throw error;
     }
 
+    if (!data.user.email) {
+      throw new Error("Sign in failed: no email returned for user");
+    }
+
     return {
+      user: {
+        id: data.user.id,
+        email: data.user.email,
+      },
       accessToken: data.session.access_token,
       refreshToken: data.session.refresh_token,
     };

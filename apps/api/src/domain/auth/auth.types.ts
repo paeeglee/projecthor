@@ -13,3 +13,9 @@ export interface SignUpResult {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface SignInResult {
+  user: AuthUser & { hasAnamnesis: boolean };
+  accessToken: string;
+  refreshToken: string;
+}
