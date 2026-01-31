@@ -1,4 +1,9 @@
-export type FieldType = "text" | "boolean" | "single_choice" | "multi_choice";
+export type FieldType =
+  | "text"
+  | "boolean"
+  | "single_choice"
+  | "multi_choice"
+  | "integer";
 
 export interface AnamnesisQuestion {
   id: string;

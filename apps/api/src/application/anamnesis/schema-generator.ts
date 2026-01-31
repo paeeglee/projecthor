@@ -36,6 +36,8 @@ function questionToJsonSchema(
         items: { type: "string", enum: question.options ?? [] },
         uniqueItems: true,
       };
+    case "integer":
+      return { type: "integer", title: question.label };
     default:
       return { type: "string", title: question.label };
   }
