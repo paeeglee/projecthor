@@ -141,7 +141,10 @@ export function OnboardingPage() {
       });
 
       toast.success("Onboarding completed!");
-      navigate("/home", { replace: true });
+      navigate("/preparing", {
+        state: { fromOnboarding: true },
+        replace: true,
+      });
     } catch {
       toast.error("Failed to submit. Please try again.");
     } finally {
