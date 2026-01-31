@@ -21,8 +21,6 @@ import {
   SelectWidget,
 } from "@/modules/onboarding/components/rjsf-templates";
 
-const ATHLETE_ID = "08a245b4-5b57-4893-a101-4f73fcbcb033";
-
 const templates = {
   BaseInputTemplate,
   FieldTemplate,
@@ -139,7 +137,6 @@ export function OnboardingPage() {
       }
 
       await submitAnamnesis({
-        athleteId: ATHLETE_ID,
         answers: flatAnswers,
       });
 

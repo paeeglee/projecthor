@@ -29,7 +29,6 @@ export interface AnamnesisFormResponse {
 }
 
 interface SubmitAnamnesisPayload {
-  athleteId: string;
   answers: Record<string, string>;
 }
 
