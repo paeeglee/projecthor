@@ -3,8 +3,9 @@
   "private": true,
   "workspaces": ["apps/*", "packages/*"],
   "scripts": {
-    "dev": "concurrently --names api --prefix-colors blue \"bun run dev:api\"",
+    "dev": "concurrently --names api,web --prefix-colors blue,green \"bun run dev:api\" \"bun run dev:web\"",
     "dev:api": "bun --filter @projecthor/api dev",
+    "dev:web": "bun --filter @projecthor/web dev",
     "lint": "biome lint",
     "format": "biome format --write",
     "check": "biome check --write"
