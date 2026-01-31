@@ -1,12 +1,15 @@
 import { useNavigate } from "react-router";
+import { useUserStore } from "@/modules/auth/stores/user-store";
 import { Button } from "@/modules/shared/ui/button";
 
 export function HomePage() {
   const navigate = useNavigate();
+  const clearUser = useUserStore((state) => state.clearUser);
 
   function handleSignOut() {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    clearUser();
     navigate("/signin");
   }
 

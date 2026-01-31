@@ -10,6 +10,7 @@ import {
   signInSchema,
 } from "@/modules/auth/schemas/sign-in-schema";
 import { signIn } from "@/modules/auth/services/sign-in";
+import { useUserStore } from "@/modules/auth/stores/user-store";
 import { Button } from "@/modules/shared/ui/button";
 import { Input } from "@/modules/shared/ui/input";
 import { Label } from "@/modules/shared/ui/label";
@@ -22,7 +23,7 @@ export function SignInPage() {
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
-      navigate("/onboarding", { replace: true });
+      navigate("/home", { replace: true });
       return;
     }
 
@@ -47,13 +48,19 @@ export function SignInPage() {
     resolver: zodResolver(signInSchema),
   });
 
+  const setUser = useUserStore((state) => state.setUser);
+
   async function onSubmit(data: SignInFormData) {
     setIsSubmitting(true);
     try {
-      const tokens = await signIn(data.email, data.password);
-      localStorage.setItem("accessToken", tokens.accessToken);
-      localStorage.setItem("refreshToken", tokens.refreshToken);
-      navigate("/onboarding");
+      const { accessToken, refreshToken, user } = await signIn(
+        data.email,
+        data.password,
+      );
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      setUser(user);
+      navigate(user.hasAnamnesis ? "/home" : "/onboarding");
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data?.error) {
         toast.error(error.response.data.error);
