@@ -8,8 +8,10 @@
   },
   "dependencies": {
     "@elysiajs/cors": "^1.4.1",
+    "@google/genai": "^1.39.0",
     "@sinclair/typebox": "^0.34.48",
-    "elysia": "^1.2"
+    "elysia": "^1.2",
+    "openai": "^6.17.0"
   },
   "peerDependencies": {
     "@supabase/supabase-js": "^2.93.2"

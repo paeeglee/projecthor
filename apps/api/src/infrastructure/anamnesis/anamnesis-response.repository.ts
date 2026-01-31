@@ -54,6 +54,23 @@ export class AnamnesisResponseRepository
     return (count ?? 0) > 0;
   }
 
+  async findByAthleteId(athleteId: string): Promise<AnamnesisResponse | null> {
+    const { data, error } = await this.supabase
+      .from("anamnesis_responses")
+      .select()
+      .eq("athlete_id", athleteId)
+      .order("completed_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error) {
+      if (error.code === "PGRST116") return null;
+      throw error;
+    }
+
+    return this.toEntity(data);
+  }
+
   private toEntity(data: Record<string, unknown>): AnamnesisResponse {
     return {
       id: data.id as string,

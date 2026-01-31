@@ -1,3 +1,4 @@
+import { GenerateWorkoutUseCase } from "./application/ai/generate-workout.use-case";
 import { CreateGroupUseCase } from "./application/anamnesis/create-group.use-case";
 import { CreateQuestionUseCase } from "./application/anamnesis/create-question.use-case";
 import { CreateTemplateUseCase } from "./application/anamnesis/create-template.use-case";
@@ -37,6 +38,8 @@ import { AuthMiddlewareRepository } from "./infrastructure/auth/auth-middleware.
 import { ExerciseRepository } from "./infrastructure/exercise/exercise.repository";
 import { HealthRepository } from "./infrastructure/health/health.repository";
 import { supabase, supabaseAdmin } from "./infrastructure/supabase/client";
+import { MockAiClientRepository } from "./infrastructure/ai/mock-client.repository";
+import { env } from "./infrastructure/config/env";
 import { WorkoutExerciseRepository } from "./infrastructure/workout/workout-exercise.repository";
 import { WorkoutGroupRepository } from "./infrastructure/workout/workout-group.repository";
 import { WorkoutLogRepository } from "./infrastructure/workout/workout-log.repository";
@@ -165,6 +168,14 @@ const getWorkoutHistoryUseCase = new GetWorkoutHistoryUseCase(
   workoutLogRepository,
 );
 
+const mockAiClientRepository = new MockAiClientRepository();
+const generateWorkoutUseCase = new GenerateWorkoutUseCase(
+  mockAiClientRepository,
+  anamnesisResponseRepository,
+  anamnesisQuestionRepository,
+  exerciseRepository,
+);
+
 export const container = {
   authMiddlewareRepository,
   getHealthStatusUseCase,
@@ -197,4 +208,5 @@ export const container = {
   removeExerciseFromGroupUseCase,
   logWorkoutUseCase,
   getWorkoutHistoryUseCase,
+  generateWorkoutUseCase,
 };

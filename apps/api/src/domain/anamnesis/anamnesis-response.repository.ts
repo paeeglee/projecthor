@@ -11,4 +11,5 @@ export interface IAnamnesisResponseRepository {
     athleteId: string,
   ): Promise<AnamnesisResponse | null>;
   existsByAthleteId(athleteId: string): Promise<boolean>;
+  findByAthleteId(athleteId: string): Promise<AnamnesisResponse | null>;
 }

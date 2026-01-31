@@ -6,6 +6,8 @@ const EnvSchema = Type.Object({
   SUPABASE_URL: Type.String(),
   SUPABASE_ANON_KEY: Type.String(),
   SUPABASE_SERVICE_ROLE_KEY: Type.String(),
+  XAI_API_KEY: Type.String(),
+  OPENAI_API_KEY: Type.String(),
 });
 
 type Env = Static<typeof EnvSchema>;

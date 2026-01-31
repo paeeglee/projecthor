@@ -2,6 +2,7 @@ import { cors } from "@elysiajs/cors";
 import { Elysia } from "elysia";
 import { container } from "./container";
 import { env } from "./infrastructure/config/env";
+import { aiPlugin } from "./presentation/ai/ai.plugin";
 import { anamnesisPlugin } from "./presentation/anamnesis/anamnesis.plugin";
 import { authPlugin } from "./presentation/auth/auth.plugin";
 import { authMiddlewarePlugin } from "./presentation/auth/auth-middleware.plugin";
@@ -64,6 +65,12 @@ new Elysia()
       removeExercise: container.removeExerciseFromGroupUseCase,
       logWorkout: container.logWorkoutUseCase,
       getHistory: container.getWorkoutHistoryUseCase,
+    }),
+  )
+  .use(
+    aiPlugin({
+      authMiddleware,
+      generateWorkout: container.generateWorkoutUseCase,
     }),
   )
   .listen(port, () => {
