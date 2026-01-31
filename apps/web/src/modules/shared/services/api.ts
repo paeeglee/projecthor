@@ -19,8 +19,11 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    const isAuthRoute = originalRequest.url?.startsWith("/auth/");
+
     if (
       error.response?.status === 401 &&
+      !isAuthRoute &&
       !isRefreshing &&
       !originalRequest._retry
     ) {
