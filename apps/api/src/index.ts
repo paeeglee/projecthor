@@ -3,6 +3,7 @@ import { Elysia } from "elysia";
 import { container } from "./container";
 import { env } from "./infrastructure/config/env";
 import { anamnesisPlugin } from "./presentation/anamnesis/anamnesis.plugin";
+import { authMiddlewarePlugin } from "./presentation/auth/auth-middleware.plugin";
 import { authPlugin } from "./presentation/auth/auth.plugin";
 import { exercisePlugin } from "./presentation/exercise/exercise.plugin";
 import { healthPlugin } from "./presentation/health/health.plugin";
@@ -22,6 +23,9 @@ new Elysia()
       confirmResetPassword: container.confirmResetPasswordUseCase,
     }),
   )
+  // Auth middleware (protects all routes registered after this point)
+  .use(authMiddlewarePlugin(container.authMiddlewareRepository))
+  // Protected routes
   .use(exercisePlugin(container.getExerciseBySlugUseCase))
   .use(
     anamnesisPlugin({

@@ -32,6 +32,7 @@ import { AnamnesisGroupRepository } from "./infrastructure/anamnesis/anamnesis-g
 import { AnamnesisQuestionRepository } from "./infrastructure/anamnesis/anamnesis-question.repository";
 import { AnamnesisResponseRepository } from "./infrastructure/anamnesis/anamnesis-response.repository";
 import { AnamnesisTemplateRepository } from "./infrastructure/anamnesis/anamnesis-template.repository";
+import { AuthMiddlewareRepository } from "./infrastructure/auth/auth-middleware.repository";
 import { AuthRepository } from "./infrastructure/auth/auth.repository";
 import { ExerciseRepository } from "./infrastructure/exercise/exercise.repository";
 import { HealthRepository } from "./infrastructure/health/health.repository";
@@ -44,6 +45,7 @@ import { WorkoutPlanRepository } from "./infrastructure/workout/workout-plan.rep
 const healthRepository = new HealthRepository();
 const getHealthStatusUseCase = new GetHealthStatusUseCase(healthRepository);
 
+const authMiddlewareRepository = new AuthMiddlewareRepository(supabaseAdmin);
 const authRepository = new AuthRepository(supabase);
 const signUpUseCase = new SignUpUseCase(authRepository);
 const signInUseCase = new SignInUseCase(authRepository);
@@ -161,6 +163,7 @@ const getWorkoutHistoryUseCase = new GetWorkoutHistoryUseCase(
 );
 
 export const container = {
+  authMiddlewareRepository,
   getHealthStatusUseCase,
   signUpUseCase,
   signInUseCase,
