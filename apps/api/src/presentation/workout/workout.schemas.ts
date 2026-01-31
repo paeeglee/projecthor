@@ -4,10 +4,6 @@ export const PlanIdParams = Type.Object({
   id: Type.String({ minLength: 1 }),
 });
 
-export const AthleteIdParams = Type.Object({
-  athleteId: Type.String({ minLength: 1 }),
-});
-
 export const PlanIdNestedParams = Type.Object({
   planId: Type.String({ minLength: 1 }),
 });
@@ -29,7 +25,6 @@ export const WorkoutExerciseIdParams = Type.Object({
 });
 
 export const CreatePlanBody = Type.Object({
-  athleteId: Type.String({ minLength: 1 }),
   name: Type.String({ minLength: 1 }),
 });
 
@@ -67,7 +62,6 @@ export const UpdateExerciseBody = Type.Object(
 );
 
 export const LogWorkoutBody = Type.Object({
-  athleteId: Type.String({ minLength: 1 }),
   setsCompleted: Type.Number({ minimum: 0 }),
   repsCompleted: Type.Number({ minimum: 0 }),
   weight: Type.Number({ minimum: 0 }),

@@ -11,9 +11,9 @@ import type { RemoveWorkoutGroupUseCase } from "../../application/workout/remove
 import type { UpdateGroupExerciseUseCase } from "../../application/workout/update-group-exercise.use-case";
 import type { UpdateWorkoutGroupUseCase } from "../../application/workout/update-workout-group.use-case";
 import type { UpdateWorkoutPlanUseCase } from "../../application/workout/update-workout-plan.use-case";
+import type { AuthUser } from "../../domain/auth/auth.types";
 import {
   AddExerciseBody,
-  AthleteIdParams,
   CreateGroupBody,
   CreatePlanBody,
   ExerciseIdParams,
@@ -45,30 +45,24 @@ interface WorkoutUseCases {
 
 export const workoutPlugin = (useCases: WorkoutUseCases) =>
   new Elysia({ prefix: "/workout" })
+    .derive(() => ({}) as { user: AuthUser })
     .post(
       "/plans",
-      async ({ body, set }) => {
-        const plan = await useCases.createPlan.execute(
-          body.athleteId,
-          body.name,
-        );
+      async ({ body, user, set }) => {
+        const plan = await useCases.createPlan.execute(user.id, body.name);
         set.status = 201;
         return plan;
       },
       { body: CreatePlanBody },
     )
-    .get(
-      "/plans/:athleteId/active",
-      async ({ params, set }) => {
-        const result = await useCases.getPlan.execute(params.athleteId);
-        if (!result) {
-          set.status = 404;
-          return { error: "No active workout plan found" };
-        }
-        return result;
-      },
-      { params: AthleteIdParams },
-    )
+    .get("/plans/active", async ({ user, set }) => {
+      const result = await useCases.getPlan.execute(user.id);
+      if (!result) {
+        set.status = 404;
+        return { error: "No active workout plan found" };
+      }
+      return result;
+    })
     .patch(
       "/plans/:id",
       async ({ params, body, set }) => {
@@ -183,10 +177,10 @@ export const workoutPlugin = (useCases: WorkoutUseCases) =>
     )
     .post(
       "/exercises/:workoutExerciseId/logs",
-      async ({ params, body, set }) => {
+      async ({ params, body, user, set }) => {
         const log = await useCases.logWorkout.execute({
           workoutExerciseId: params.workoutExerciseId,
-          athleteId: body.athleteId,
+          athleteId: user.id,
           setsCompleted: body.setsCompleted,
           repsCompleted: body.repsCompleted,
           weight: body.weight,

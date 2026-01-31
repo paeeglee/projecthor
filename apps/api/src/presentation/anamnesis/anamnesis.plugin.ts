@@ -10,6 +10,7 @@ import type { SubmitResponseUseCase } from "../../application/anamnesis/submit-r
 import type { UpdateGroupUseCase } from "../../application/anamnesis/update-group.use-case";
 import type { UpdateQuestionUseCase } from "../../application/anamnesis/update-question.use-case";
 import type { UpdateTemplateUseCase } from "../../application/anamnesis/update-template.use-case";
+import type { AuthUser } from "../../domain/auth/auth.types";
 import {
   CreateGroupBody,
   CreateQuestionBody,
@@ -39,6 +40,7 @@ interface AnamnesisUseCases {
 
 export const anamnesisPlugin = (useCases: AnamnesisUseCases) =>
   new Elysia({ prefix: "/anamnesis" })
+    .derive(() => ({}) as { user: AuthUser })
     .post(
       "/templates",
       async ({ body, set }) => {
@@ -179,11 +181,11 @@ export const anamnesisPlugin = (useCases: AnamnesisUseCases) =>
     )
     .post(
       "/templates/:id/submit",
-      async ({ params, body, set }) => {
+      async ({ params, body, user, set }) => {
         try {
           const response = await useCases.submitResponse.execute(
             params.id,
-            body.athleteId,
+            user.id,
             body.answers,
           );
           set.status = 201;

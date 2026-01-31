@@ -65,6 +65,5 @@ export const UpdateQuestionBody = Type.Object(
 );
 
 export const SubmitResponseBody = Type.Object({
-  athleteId: Type.String({ minLength: 1 }),
   answers: Type.Record(Type.String(), Type.Unknown()),
 });
