@@ -27,3 +27,12 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+[data-sonner-toaster] {
+  --width: 100% !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  padding: 0 16px !important;
+  --offset: 0px !important;
+}

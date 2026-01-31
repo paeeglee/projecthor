@@ -1,20 +1,31 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
 import {
   type SignInFormData,
   signInSchema,
 } from "@/modules/auth/schemas/sign-in-schema";
+import { signIn } from "@/modules/auth/services/sign-in";
 import { Button } from "@/modules/shared/ui/button";
 import { Input } from "@/modules/shared/ui/input";
 import { Label } from "@/modules/shared/ui/label";
 
 export function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      navigate("/onboarding", { replace: true });
+      return;
+    }
+
     document.body.style.backgroundImage = "url('/bg_signin.jpg')";
     document.body.style.backgroundSize = "cover";
     document.body.style.backgroundPosition = "center";
@@ -26,7 +37,7 @@ export function SignInPage() {
       document.body.style.backgroundPosition = "";
       document.body.style.backgroundRepeat = "";
     };
-  }, []);
+  }, [navigate]);
 
   const {
     register,
@@ -36,8 +47,22 @@ export function SignInPage() {
     resolver: zodResolver(signInSchema),
   });
 
-  function onSubmit(data: SignInFormData) {
-    console.log("Sign in:", data);
+  async function onSubmit(data: SignInFormData) {
+    setIsSubmitting(true);
+    try {
+      const tokens = await signIn(data.email, data.password);
+      localStorage.setItem("accessToken", tokens.accessToken);
+      localStorage.setItem("refreshToken", tokens.refreshToken);
+      navigate("/onboarding");
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.data?.error) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -91,8 +116,8 @@ export function SignInPage() {
             )}
           </div>
 
-          <Button type="submit" className="mt-2 w-full">
-            Sign in
+          <Button type="submit" className="mt-2 w-full" disabled={isSubmitting}>
+            {isSubmitting ? "Signing in..." : "Sign in"}
           </Button>
         </form>
 

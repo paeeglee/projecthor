@@ -1,3 +1,4 @@
+import { cors } from "@elysiajs/cors";
 import { Elysia } from "elysia";
 import { container } from "./container";
 import { env } from "./infrastructure/config/env";
@@ -10,6 +11,7 @@ import { workoutPlugin } from "./presentation/workout/workout.plugin";
 const port = Number(env.PORT);
 
 new Elysia()
+  .use(cors({ origin: "http://localhost:5173" }))
   .use(healthPlugin(container.getHealthStatusUseCase))
   .use(
     authPlugin({
