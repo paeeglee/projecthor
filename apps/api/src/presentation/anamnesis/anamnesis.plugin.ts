@@ -10,7 +10,7 @@ import type { SubmitResponseUseCase } from "../../application/anamnesis/submit-r
 import type { UpdateGroupUseCase } from "../../application/anamnesis/update-group.use-case";
 import type { UpdateQuestionUseCase } from "../../application/anamnesis/update-question.use-case";
 import type { UpdateTemplateUseCase } from "../../application/anamnesis/update-template.use-case";
-import type { AuthUser } from "../../domain/auth/auth.types";
+import type { authMiddlewarePlugin } from "../auth/auth-middleware.plugin";
 import {
   CreateGroupBody,
   CreateQuestionBody,
@@ -25,6 +25,7 @@ import {
 } from "./anamnesis.schemas";
 
 interface AnamnesisUseCases {
+  authMiddleware: ReturnType<typeof authMiddlewarePlugin>;
   createTemplate: CreateTemplateUseCase;
   getTemplate: GetTemplateUseCase;
   updateTemplate: UpdateTemplateUseCase;
@@ -40,7 +41,7 @@ interface AnamnesisUseCases {
 
 export const anamnesisPlugin = (useCases: AnamnesisUseCases) =>
   new Elysia({ prefix: "/anamnesis" })
-    .derive(() => ({}) as { user: AuthUser })
+    .use(useCases.authMiddleware)
     .post(
       "/templates",
       async ({ body, set }) => {

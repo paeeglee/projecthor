@@ -10,6 +10,7 @@ import { healthPlugin } from "./presentation/health/health.plugin";
 import { workoutPlugin } from "./presentation/workout/workout.plugin";
 
 const port = Number(env.PORT);
+const authMiddleware = authMiddlewarePlugin(container.authMiddlewareRepository);
 
 new Elysia()
   .use(cors({ origin: "http://localhost:5173" }))
@@ -24,11 +25,17 @@ new Elysia()
     }),
   )
   // Auth middleware (protects all routes registered after this point)
-  .use(authMiddlewarePlugin(container.authMiddlewareRepository))
+  .use(authMiddleware)
   // Protected routes
-  .use(exercisePlugin(container.getExerciseBySlugUseCase))
+  .use(
+    exercisePlugin({
+      authMiddleware,
+      useCase: container.getExerciseBySlugUseCase,
+    }),
+  )
   .use(
     anamnesisPlugin({
+      authMiddleware,
       createTemplate: container.createTemplateUseCase,
       getTemplate: container.getTemplateUseCase,
       updateTemplate: container.updateTemplateUseCase,
@@ -44,6 +51,7 @@ new Elysia()
   )
   .use(
     workoutPlugin({
+      authMiddleware,
       createPlan: container.createWorkoutPlanUseCase,
       getPlan: container.getWorkoutPlanUseCase,
       updatePlan: container.updateWorkoutPlanUseCase,

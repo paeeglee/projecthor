@@ -1,8 +1,17 @@
 import { Elysia, t } from "elysia";
 import type { GetExerciseBySlugUseCase } from "../../application/exercise/get-exercise-by-slug.use-case";
+import type { authMiddlewarePlugin } from "../auth/auth-middleware.plugin";
 
-export const exercisePlugin = (useCase: GetExerciseBySlugUseCase) =>
-  new Elysia({ prefix: "/exercises" }).get(
+interface ExercisePluginDeps {
+  authMiddleware: ReturnType<typeof authMiddlewarePlugin>;
+  useCase: GetExerciseBySlugUseCase;
+}
+
+export const exercisePlugin = ({
+  authMiddleware,
+  useCase,
+}: ExercisePluginDeps) =>
+  new Elysia({ prefix: "/exercises" }).use(authMiddleware).get(
     "/:slug",
     async ({ params, set }) => {
       const exercise = await useCase.execute(params.slug);

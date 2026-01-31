@@ -11,7 +11,7 @@ import type { RemoveWorkoutGroupUseCase } from "../../application/workout/remove
 import type { UpdateGroupExerciseUseCase } from "../../application/workout/update-group-exercise.use-case";
 import type { UpdateWorkoutGroupUseCase } from "../../application/workout/update-workout-group.use-case";
 import type { UpdateWorkoutPlanUseCase } from "../../application/workout/update-workout-plan.use-case";
-import type { AuthUser } from "../../domain/auth/auth.types";
+import type { authMiddlewarePlugin } from "../auth/auth-middleware.plugin";
 import {
   AddExerciseBody,
   CreateGroupBody,
@@ -29,6 +29,7 @@ import {
 } from "./workout.schemas";
 
 interface WorkoutUseCases {
+  authMiddleware: ReturnType<typeof authMiddlewarePlugin>;
   createPlan: CreateWorkoutPlanUseCase;
   getPlan: GetWorkoutPlanUseCase;
   updatePlan: UpdateWorkoutPlanUseCase;
@@ -45,7 +46,7 @@ interface WorkoutUseCases {
 
 export const workoutPlugin = (useCases: WorkoutUseCases) =>
   new Elysia({ prefix: "/workout" })
-    .derive(() => ({}) as { user: AuthUser })
+    .use(useCases.authMiddleware)
     .post(
       "/plans",
       async ({ body, user, set }) => {
