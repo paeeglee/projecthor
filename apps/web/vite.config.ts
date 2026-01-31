@@ -17,8 +17,8 @@ export default defineConfig({
         short_name: "Projecthor",
         start_url: "/",
         display: "standalone",
-        background_color: "#ffffff",
-        theme_color: "#000000",
+        background_color: "#0D0D0D",
+        theme_color: "#0D0D0D",
         icons: [
           {
             src: "/icon-192x192.png",
