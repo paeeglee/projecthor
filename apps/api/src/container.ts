@@ -32,8 +32,8 @@ import { AnamnesisGroupRepository } from "./infrastructure/anamnesis/anamnesis-g
 import { AnamnesisQuestionRepository } from "./infrastructure/anamnesis/anamnesis-question.repository";
 import { AnamnesisResponseRepository } from "./infrastructure/anamnesis/anamnesis-response.repository";
 import { AnamnesisTemplateRepository } from "./infrastructure/anamnesis/anamnesis-template.repository";
-import { AuthMiddlewareRepository } from "./infrastructure/auth/auth-middleware.repository";
 import { AuthRepository } from "./infrastructure/auth/auth.repository";
+import { AuthMiddlewareRepository } from "./infrastructure/auth/auth-middleware.repository";
 import { ExerciseRepository } from "./infrastructure/exercise/exercise.repository";
 import { HealthRepository } from "./infrastructure/health/health.repository";
 import { supabase, supabaseAdmin } from "./infrastructure/supabase/client";

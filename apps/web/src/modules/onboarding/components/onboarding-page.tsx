@@ -1,17 +1,10 @@
-import Form from "@rjsf/core";
 import type { IChangeEvent } from "@rjsf/core";
-import validator from "@rjsf/validator-ajv8";
+import Form from "@rjsf/core";
 import type { RJSFSchema, UiSchema } from "@rjsf/utils";
+import validator from "@rjsf/validator-ajv8";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import {
-  type AnamnesisFormResponse,
-  fetchAnamnesisForm,
-  submitAnamnesis,
-} from "@/modules/onboarding/services/onboarding";
-import { Button } from "@/modules/shared/ui/button";
-import { Stepper } from "@/modules/onboarding/components/stepper";
 import {
   BaseInputTemplate,
   ErrorListTemplate,
@@ -20,6 +13,13 @@ import {
   ObjectFieldTemplate,
   SelectWidget,
 } from "@/modules/onboarding/components/rjsf-templates";
+import { Stepper } from "@/modules/onboarding/components/stepper";
+import {
+  type AnamnesisFormResponse,
+  fetchAnamnesisForm,
+  submitAnamnesis,
+} from "@/modules/onboarding/services/onboarding";
+import { Button } from "@/modules/shared/ui/button";
 
 const templates = {
   BaseInputTemplate,

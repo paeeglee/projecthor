@@ -1,7 +1,7 @@
-import { Navigate, createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import { SignInPage } from "@/modules/auth/components/sign-in-page";
-import { OnboardingPage } from "@/modules/onboarding/components/onboarding-page";
 import { HomePage } from "@/modules/home/components/home-page";
+import { OnboardingPage } from "@/modules/onboarding/components/onboarding-page";
 import { AppLayout } from "@/modules/shared/components/app-layout";
 
 export const router = createBrowserRouter([

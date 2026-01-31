@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { IAuthMiddlewareRepository } from "../../domain/auth/auth-middleware.repository";
 import type { AuthUser } from "../../domain/auth/auth.types";
+import type { IAuthMiddlewareRepository } from "../../domain/auth/auth-middleware.repository";
 
 export class AuthMiddlewareRepository implements IAuthMiddlewareRepository {
   constructor(private readonly supabase: SupabaseClient) {}
