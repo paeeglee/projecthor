@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import { useUserStore } from "@/modules/auth/stores/user-store";
 import { Button } from "@/modules/shared/ui/button";
+import { WeekGoals } from "./week-goals";
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -14,8 +15,8 @@ export function HomePage() {
   }
 
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-4">
-      <h1 className="text-2xl font-bold">Home</h1>
+    <div className="flex min-h-svh flex-col gap-6 py-6">
+      <WeekGoals />
       <Button variant="outline" onClick={handleSignOut}>
         Sign out
       </Button>

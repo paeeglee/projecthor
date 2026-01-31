@@ -6,6 +6,7 @@ import { aiPlugin } from "./presentation/ai/ai.plugin";
 import { anamnesisPlugin } from "./presentation/anamnesis/anamnesis.plugin";
 import { authPlugin } from "./presentation/auth/auth.plugin";
 import { authMiddlewarePlugin } from "./presentation/auth/auth-middleware.plugin";
+import { dashboardPlugin } from "./presentation/dashboard/dashboard.plugin";
 import { exercisePlugin } from "./presentation/exercise/exercise.plugin";
 import { healthPlugin } from "./presentation/health/health.plugin";
 import { workoutPlugin } from "./presentation/workout/workout.plugin";
@@ -71,6 +72,12 @@ new Elysia()
     aiPlugin({
       authMiddleware,
       generateWorkout: container.generateWorkoutUseCase,
+    }),
+  )
+  .use(
+    dashboardPlugin({
+      authMiddleware,
+      getWeekGoals: container.getWeekGoalsUseCase,
     }),
   )
   .listen(port, () => {

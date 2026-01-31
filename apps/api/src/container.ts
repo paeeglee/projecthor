@@ -1,4 +1,5 @@
 import { GenerateWorkoutUseCase } from "./application/ai/generate-workout.use-case";
+import { GetWeekGoalsUseCase } from "./application/dashboard/get-week-goals.use-case";
 import { CreateGroupUseCase } from "./application/anamnesis/create-group.use-case";
 import { CreateQuestionUseCase } from "./application/anamnesis/create-question.use-case";
 import { CreateTemplateUseCase } from "./application/anamnesis/create-template.use-case";
@@ -44,6 +45,7 @@ import { WorkoutExerciseRepository } from "./infrastructure/workout/workout-exer
 import { WorkoutGroupRepository } from "./infrastructure/workout/workout-group.repository";
 import { WorkoutLogRepository } from "./infrastructure/workout/workout-log.repository";
 import { WorkoutPlanRepository } from "./infrastructure/workout/workout-plan.repository";
+import { WeekGoalsRepository } from "./infrastructure/dashboard/week-goals.repository";
 
 const healthRepository = new HealthRepository();
 const getHealthStatusUseCase = new GetHealthStatusUseCase(healthRepository);
@@ -131,6 +133,9 @@ const workoutGroupRepository = new WorkoutGroupRepository(supabaseAdmin);
 const workoutExerciseRepository = new WorkoutExerciseRepository(supabaseAdmin);
 const workoutLogRepository = new WorkoutLogRepository(supabaseAdmin);
 
+const weekGoalsRepository = new WeekGoalsRepository(supabaseAdmin);
+const getWeekGoalsUseCase = new GetWeekGoalsUseCase(weekGoalsRepository);
+
 const createWorkoutPlanUseCase = new CreateWorkoutPlanUseCase(
   workoutPlanRepository,
 );
@@ -212,4 +217,5 @@ export const container = {
   logWorkoutUseCase,
   getWorkoutHistoryUseCase,
   generateWorkoutUseCase,
+  getWeekGoalsUseCase,
 };
