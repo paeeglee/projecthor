@@ -1,5 +1,4 @@
 import { GenerateWorkoutUseCase } from "./application/ai/generate-workout.use-case";
-import { GetWeekGoalsUseCase } from "./application/dashboard/get-week-goals.use-case";
 import { CreateGroupUseCase } from "./application/anamnesis/create-group.use-case";
 import { CreateQuestionUseCase } from "./application/anamnesis/create-question.use-case";
 import { CreateTemplateUseCase } from "./application/anamnesis/create-template.use-case";
@@ -16,6 +15,8 @@ import { ResetPasswordUseCase } from "./application/auth/reset-password.use-case
 import { RevalidateUseCase } from "./application/auth/revalidate.use-case";
 import { SignInUseCase } from "./application/auth/sign-in.use-case";
 import { SignUpUseCase } from "./application/auth/sign-up.use-case";
+import { GetWeekGoalsUseCase } from "./application/dashboard/get-week-goals.use-case";
+import { GetWorkoutSummaryUseCase } from "./application/dashboard/get-workout-summary.use-case";
 import { GetExerciseBySlugUseCase } from "./application/exercise/get-exercise-by-slug.use-case";
 import { GetHealthStatusUseCase } from "./application/health/get-health-status.use-case";
 import { AddExerciseToGroupUseCase } from "./application/workout/add-exercise-to-group.use-case";
@@ -30,22 +31,23 @@ import { RemoveWorkoutGroupUseCase } from "./application/workout/remove-workout-
 import { UpdateGroupExerciseUseCase } from "./application/workout/update-group-exercise.use-case";
 import { UpdateWorkoutGroupUseCase } from "./application/workout/update-workout-group.use-case";
 import { UpdateWorkoutPlanUseCase } from "./application/workout/update-workout-plan.use-case";
+import { MockAiClientRepository } from "./infrastructure/ai/mock-client.repository";
 import { AnamnesisGroupRepository } from "./infrastructure/anamnesis/anamnesis-group.repository";
 import { AnamnesisQuestionRepository } from "./infrastructure/anamnesis/anamnesis-question.repository";
 import { AnamnesisResponseRepository } from "./infrastructure/anamnesis/anamnesis-response.repository";
 import { AnamnesisTemplateRepository } from "./infrastructure/anamnesis/anamnesis-template.repository";
 import { AuthRepository } from "./infrastructure/auth/auth.repository";
 import { AuthMiddlewareRepository } from "./infrastructure/auth/auth-middleware.repository";
+import { env } from "./infrastructure/config/env";
+import { WeekGoalsRepository } from "./infrastructure/dashboard/week-goals.repository";
+import { WorkoutSummaryRepository } from "./infrastructure/dashboard/workout-summary.repository";
 import { ExerciseRepository } from "./infrastructure/exercise/exercise.repository";
 import { HealthRepository } from "./infrastructure/health/health.repository";
 import { supabase, supabaseAdmin } from "./infrastructure/supabase/client";
-import { MockAiClientRepository } from "./infrastructure/ai/mock-client.repository";
-import { env } from "./infrastructure/config/env";
 import { WorkoutExerciseRepository } from "./infrastructure/workout/workout-exercise.repository";
 import { WorkoutGroupRepository } from "./infrastructure/workout/workout-group.repository";
 import { WorkoutLogRepository } from "./infrastructure/workout/workout-log.repository";
 import { WorkoutPlanRepository } from "./infrastructure/workout/workout-plan.repository";
-import { WeekGoalsRepository } from "./infrastructure/dashboard/week-goals.repository";
 
 const healthRepository = new HealthRepository();
 const getHealthStatusUseCase = new GetHealthStatusUseCase(healthRepository);
@@ -136,6 +138,11 @@ const workoutLogRepository = new WorkoutLogRepository(supabaseAdmin);
 const weekGoalsRepository = new WeekGoalsRepository(supabaseAdmin);
 const getWeekGoalsUseCase = new GetWeekGoalsUseCase(weekGoalsRepository);
 
+const workoutSummaryRepository = new WorkoutSummaryRepository(supabaseAdmin);
+const getWorkoutSummaryUseCase = new GetWorkoutSummaryUseCase(
+  workoutSummaryRepository,
+);
+
 const createWorkoutPlanUseCase = new CreateWorkoutPlanUseCase(
   workoutPlanRepository,
 );
@@ -218,4 +225,5 @@ export const container = {
   getWorkoutHistoryUseCase,
   generateWorkoutUseCase,
   getWeekGoalsUseCase,
+  getWorkoutSummaryUseCase,
 };

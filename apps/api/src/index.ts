@@ -78,6 +78,7 @@ new Elysia()
     dashboardPlugin({
       authMiddleware,
       getWeekGoals: container.getWeekGoalsUseCase,
+      getWorkoutSummary: container.getWorkoutSummaryUseCase,
     }),
   )
   .listen(port, () => {
