@@ -38,6 +38,22 @@ export function WorkoutSessionPage() {
             completed: false,
           }));
         }
+
+        const savedRaw = localStorage.getItem(`workout-sets-${groupId}`);
+        if (savedRaw) {
+          try {
+            const saved: Record<string, SetRow[]> = JSON.parse(savedRaw);
+            const savedKeys = Object.keys(saved).sort().join(",");
+            const initialKeys = Object.keys(initial).sort().join(",");
+            if (savedKeys === initialKeys) {
+              setSetsMap(saved);
+              return;
+            }
+          } catch {
+            // corrupted data, fall through to default
+          }
+        }
+
         setSetsMap(initial);
       })
       .catch(() => setError(true))
@@ -70,6 +86,11 @@ export function WorkoutSessionPage() {
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
   }, []);
+
+  useEffect(() => {
+    if (!groupId || Object.keys(setsMap).length === 0) return;
+    localStorage.setItem(`workout-sets-${groupId}`, JSON.stringify(setsMap));
+  }, [groupId, setsMap]);
 
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
@@ -159,6 +180,7 @@ export function WorkoutSessionPage() {
     try {
       await finishWorkoutSession(groupId, completedSets, durationSeconds);
       localStorage.removeItem(key);
+      localStorage.removeItem(`workout-sets-${groupId}`);
       navigate("/home");
     } catch {
       setSubmitting(false);
