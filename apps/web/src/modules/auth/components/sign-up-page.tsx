@@ -6,17 +6,16 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import {
-  type SignInFormData,
-  signInSchema,
-} from "@/modules/auth/schemas/sign-in-schema";
-import { getProfile } from "@/modules/auth/services/profile";
-import { signIn } from "@/modules/auth/services/sign-in";
+  type SignUpFormData,
+  signUpSchema,
+} from "@/modules/auth/schemas/sign-up-schema";
+import { signUp } from "@/modules/auth/services/sign-up";
 import { useUserStore } from "@/modules/auth/stores/user-store";
 import { Button } from "@/modules/shared/ui/button";
 import { Input } from "@/modules/shared/ui/input";
 import { Label } from "@/modules/shared/ui/label";
 
-export function SignInPage() {
+export function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -45,26 +44,24 @@ export function SignInPage() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignInFormData>({
-    resolver: zodResolver(signInSchema),
+  } = useForm<SignUpFormData>({
+    resolver: zodResolver(signUpSchema),
   });
 
   const setUser = useUserStore((state) => state.setUser);
 
-  async function onSubmit(data: SignInFormData) {
+  async function onSubmit(data: SignUpFormData) {
     setIsSubmitting(true);
     try {
-      const { accessToken, refreshToken, user } = await signIn(
+      const { accessToken, refreshToken, user } = await signUp(
+        data.fullName,
         data.email,
         data.password,
       );
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
-
-      const profile = await getProfile();
-      setUser({ ...user, fullName: profile.fullName });
-
-      navigate(user.hasAnamnesis ? "/home" : "/onboarding");
+      setUser({ ...user, hasAnamnesis: false, fullName: data.fullName });
+      navigate("/onboarding");
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data?.error) {
         toast.error(error.response.data.error);
@@ -79,9 +76,24 @@ export function SignInPage() {
   return (
     <div className="flex min-h-svh flex-col justify-center">
       <div className="mx-auto w-full max-w-md rounded-2xl bg-background/80 p-8 backdrop-blur-md">
-        <h1 className="mb-8 text-2xl font-bold">Sign in</h1>
+        <h1 className="mb-8 text-2xl font-bold">Sign up</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="fullName">Name</Label>
+            <Input
+              id="fullName"
+              type="text"
+              placeholder="Your full name"
+              {...register("fullName")}
+            />
+            {errors.fullName && (
+              <span className="text-sm text-red-400">
+                {errors.fullName.message}
+              </span>
+            )}
+          </div>
+
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -103,7 +115,7 @@ export function SignInPage() {
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                placeholder="Your password"
+                placeholder="At least 8 characters"
                 className="pr-11"
                 {...register("password")}
               />
@@ -128,14 +140,14 @@ export function SignInPage() {
           </div>
 
           <Button type="submit" className="mt-2 w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Signing in..." : "Sign in"}
+            {isSubmitting ? "Creating account..." : "Sign up"}
           </Button>
         </form>
 
         <p className="mt-6 text-center text-sm text-text-muted">
-          Don't have an account?{" "}
-          <Link to="/signup" className="text-primary hover:underline">
-            Sign up
+          Already have an account?{" "}
+          <Link to="/signin" className="text-primary hover:underline">
+            Sign in
           </Link>
         </p>
       </div>

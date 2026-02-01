@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import { SignInPage } from "@/modules/auth/components/sign-in-page";
+import { SignUpPage } from "@/modules/auth/components/sign-up-page";
 import { HomePage } from "@/modules/home/components/home-page";
 import { OnboardingPage } from "@/modules/onboarding/components/onboarding-page";
 import { PreparingPage } from "@/modules/preparing/components/preparing-page";
@@ -17,6 +18,10 @@ export const router = createBrowserRouter([
       {
         path: "/signin",
         element: <SignInPage />,
+      },
+      {
+        path: "/signup",
+        element: <SignUpPage />,
       },
       {
         path: "/onboarding",

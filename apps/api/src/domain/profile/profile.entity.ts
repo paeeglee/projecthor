@@ -1,7 +1,8 @@
 export interface Profile {
   id: string;
   userId: string;
-  bodyWeight: number;
+  fullName: string;
+  bodyWeight: number | null;
   bodyWeightUpdatedAt: Date;
   createdAt: Date;
   updatedAt: Date;

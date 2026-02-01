@@ -29,6 +29,7 @@ export const authPlugin = (useCases: AuthUseCases) =>
           const result = await useCases.signUp.execute(
             body.email,
             body.password,
+            body.fullName,
           );
           set.status = 201;
           return {

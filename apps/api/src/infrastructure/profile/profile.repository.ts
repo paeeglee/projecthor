@@ -2,6 +2,18 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Profile } from "../../domain/profile/profile.entity";
 import type { IProfileRepository } from "../../domain/profile/profile.repository";
 
+function toProfile(data: Record<string, unknown>): Profile {
+  return {
+    id: data.id as string,
+    userId: data.user_id as string,
+    fullName: data.full_name as string,
+    bodyWeight: data.body_weight ? Number(data.body_weight) : null,
+    bodyWeightUpdatedAt: new Date(data.body_weight_updated_at as string),
+    createdAt: new Date(data.created_at as string),
+    updatedAt: new Date(data.updated_at as string),
+  };
+}
+
 export class ProfileRepository implements IProfileRepository {
   constructor(private readonly supabase: SupabaseClient) {}
 
@@ -14,33 +26,27 @@ export class ProfileRepository implements IProfileRepository {
 
     if (error || !data) return null;
 
-    return {
-      id: data.id,
-      userId: data.user_id,
-      bodyWeight: Number(data.body_weight),
-      bodyWeightUpdatedAt: new Date(data.body_weight_updated_at),
-      createdAt: new Date(data.created_at),
-      updatedAt: new Date(data.updated_at),
-    };
+    return toProfile(data);
   }
 
-  async create(userId: string, bodyWeight: number): Promise<Profile> {
+  async create(
+    userId: string,
+    fullName: string,
+    bodyWeight?: number,
+  ): Promise<Profile> {
     const { data, error } = await this.supabase
       .from("profiles")
-      .insert({ user_id: userId, body_weight: bodyWeight })
+      .insert({
+        user_id: userId,
+        full_name: fullName,
+        ...(bodyWeight != null && { body_weight: bodyWeight }),
+      })
       .select()
       .single();
 
     if (error || !data) throw new Error("Failed to create profile");
 
-    return {
-      id: data.id,
-      userId: data.user_id,
-      bodyWeight: Number(data.body_weight),
-      bodyWeightUpdatedAt: new Date(data.body_weight_updated_at),
-      createdAt: new Date(data.created_at),
-      updatedAt: new Date(data.updated_at),
-    };
+    return toProfile(data);
   }
 
   async updateBodyWeight(userId: string, bodyWeight: number): Promise<Profile> {
@@ -57,13 +63,6 @@ export class ProfileRepository implements IProfileRepository {
 
     if (error || !data) throw new Error("Failed to update body weight");
 
-    return {
-      id: data.id,
-      userId: data.user_id,
-      bodyWeight: Number(data.body_weight),
-      bodyWeightUpdatedAt: new Date(data.body_weight_updated_at),
-      createdAt: new Date(data.created_at),
-      updatedAt: new Date(data.updated_at),
-    };
+    return toProfile(data);
   }
 }

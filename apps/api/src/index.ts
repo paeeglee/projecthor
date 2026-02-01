@@ -81,6 +81,7 @@ new Elysia()
     profilePlugin({
       authMiddleware,
       createProfile: container.createProfileUseCase,
+      getProfile: container.getProfileUseCase,
       updateBodyWeight: container.updateBodyWeightUseCase,
     }),
   )

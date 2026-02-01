@@ -18,6 +18,7 @@ import { SignUpUseCase } from "./application/auth/sign-up.use-case";
 import { GetMuscleGroupChartUseCase } from "./application/dashboard/get-muscle-group-chart.use-case";
 import { GetRelativeStrengthUseCase } from "./application/dashboard/get-relative-strength.use-case";
 import { CreateProfileUseCase } from "./application/profile/create-profile.use-case";
+import { GetProfileUseCase } from "./application/profile/get-profile.use-case";
 import { UpdateBodyWeightUseCase } from "./application/profile/update-body-weight.use-case";
 import { GetWeekGoalsUseCase } from "./application/dashboard/get-week-goals.use-case";
 import { GetWorkoutSummaryUseCase } from "./application/dashboard/get-workout-summary.use-case";
@@ -67,7 +68,8 @@ const authRepository = new AuthRepository(supabase);
 const anamnesisResponseRepository = new AnamnesisResponseRepository(
   supabaseAdmin,
 );
-const signUpUseCase = new SignUpUseCase(authRepository);
+const profileRepository = new ProfileRepository(supabaseAdmin);
+const signUpUseCase = new SignUpUseCase(authRepository, profileRepository);
 const signInUseCase = new SignInUseCase(
   authRepository,
   anamnesisResponseRepository,
@@ -210,8 +212,8 @@ const getGroupExercisesUseCase = new GetGroupExercisesUseCase(
   workoutLogRepository,
 );
 
-const profileRepository = new ProfileRepository(supabaseAdmin);
 const createProfileUseCase = new CreateProfileUseCase(profileRepository);
+const getProfileUseCase = new GetProfileUseCase(profileRepository);
 const updateBodyWeightUseCase = new UpdateBodyWeightUseCase(profileRepository);
 
 const relativeStrengthRepository = new RelativeStrengthRepository(
@@ -272,6 +274,7 @@ export const container = {
   getWorkoutSummaryUseCase,
   getMuscleGroupChartUseCase,
   createProfileUseCase,
+  getProfileUseCase,
   updateBodyWeightUseCase,
   getRelativeStrengthUseCase,
 };

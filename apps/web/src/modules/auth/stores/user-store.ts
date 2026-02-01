@@ -4,6 +4,7 @@ interface User {
   id: string;
   email: string;
   hasAnamnesis: boolean;
+  fullName: string | null;
 }
 
 interface UserStore {

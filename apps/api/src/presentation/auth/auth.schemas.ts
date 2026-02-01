@@ -3,6 +3,7 @@ import { Type } from "@sinclair/typebox";
 export const SignUpBody = Type.Object({
   email: Type.String({ format: "email" }),
   password: Type.String({ minLength: 8 }),
+  fullName: Type.String({ minLength: 1 }),
 });
 
 export const SignInBody = Type.Object({
