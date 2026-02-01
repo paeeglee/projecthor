@@ -36,6 +36,33 @@ export class ExerciseRepository implements IExerciseRepository {
     };
   }
 
+  async findByIds(ids: string[]): Promise<Exercise[]> {
+    if (ids.length === 0) return [];
+
+    const { data, error } = await this.supabase
+      .from("exercises")
+      .select()
+      .in("id", ids);
+
+    if (error) throw error;
+
+    return (data ?? []).map((row) => ({
+      id: row.id,
+      slug: row.slug,
+      name: row.name,
+      force: row.force,
+      level: row.level,
+      mechanic: row.mechanic,
+      equipment: row.equipment,
+      primaryMuscles: row.primary_muscles,
+      secondaryMuscles: row.secondary_muscles,
+      instructions: row.instructions,
+      category: row.category,
+      images: row.images,
+      createdAt: new Date(row.created_at),
+    }));
+  }
+
   async listAll(): Promise<Exercise[]> {
     const { data, error } = await this.supabase.from("exercises").select();
 

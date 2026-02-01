@@ -150,6 +150,7 @@ const getWorkoutPlanUseCase = new GetWorkoutPlanUseCase(
   workoutPlanRepository,
   workoutGroupRepository,
   workoutExerciseRepository,
+  exerciseRepository,
 );
 const updateWorkoutPlanUseCase = new UpdateWorkoutPlanUseCase(
   workoutPlanRepository,
