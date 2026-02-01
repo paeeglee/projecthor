@@ -3,6 +3,7 @@ import type { AddExerciseToGroupUseCase } from "../../application/workout/add-ex
 import type { AddWorkoutGroupUseCase } from "../../application/workout/add-workout-group.use-case";
 import type { CreateWorkoutPlanUseCase } from "../../application/workout/create-workout-plan.use-case";
 import type { DeactivateWorkoutPlanUseCase } from "../../application/workout/deactivate-workout-plan.use-case";
+import type { GetGroupExercisesUseCase } from "../../application/workout/get-group-exercises.use-case";
 import type { GetWorkoutHistoryUseCase } from "../../application/workout/get-workout-history.use-case";
 import type { GetWorkoutPlanUseCase } from "../../application/workout/get-workout-plan.use-case";
 import type { LogWorkoutUseCase } from "../../application/workout/log-workout.use-case";
@@ -42,6 +43,7 @@ interface WorkoutUseCases {
   removeExercise: RemoveExerciseFromGroupUseCase;
   logWorkout: LogWorkoutUseCase;
   getHistory: GetWorkoutHistoryUseCase;
+  getGroupExercises: GetGroupExercisesUseCase;
 }
 
 export const workoutPlugin = (useCases: WorkoutUseCases) =>
@@ -64,6 +66,18 @@ export const workoutPlugin = (useCases: WorkoutUseCases) =>
       }
       return result;
     })
+    .get(
+      "/groups/:groupId/exercises",
+      async ({ params, set }) => {
+        const result = await useCases.getGroupExercises.execute(params.groupId);
+        if (!result) {
+          set.status = 404;
+          return { error: "Group not found" };
+        }
+        return result;
+      },
+      { params: GroupIdNestedParams },
+    )
     .patch(
       "/plans/:id",
       async ({ params, body, set }) => {

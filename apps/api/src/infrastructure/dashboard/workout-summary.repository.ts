@@ -79,14 +79,17 @@ export class WorkoutSummaryRepository implements IWorkoutSummaryRepository {
     }
 
     // 4. Determine next workout (cyclic rotation)
-    let nextWorkout: { groupLabel: string } | null = null;
+    let nextWorkout: { groupId: string; groupLabel: string } | null = null;
 
     if (lastCompletedIndex === -1) {
       // No workout done yet — next is the first group
-      nextWorkout = { groupLabel: groups[0].label };
+      nextWorkout = { groupId: groups[0].id, groupLabel: groups[0].label };
     } else {
       const nextIndex = (lastCompletedIndex + 1) % groups.length;
-      nextWorkout = { groupLabel: groups[nextIndex].label };
+      nextWorkout = {
+        groupId: groups[nextIndex].id,
+        groupLabel: groups[nextIndex].label,
+      };
     }
 
     return {

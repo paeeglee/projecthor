@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import {
   getWorkoutSummary,
   type WorkoutSummaryResponse,
@@ -7,6 +8,7 @@ import { Button } from "@/modules/shared/ui/button";
 import { WorkoutSummarySkeleton } from "./workout-summary-skeleton";
 
 export function WorkoutSummary() {
+  const navigate = useNavigate();
   const [data, setData] = useState<WorkoutSummaryResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -55,7 +57,16 @@ export function WorkoutSummary() {
           )}
         </div>
       </div>
-      <Button className="mt-4 w-full" size="default">
+      <Button
+        className="mt-4 w-full"
+        size="default"
+        disabled={!data.nextWorkout}
+        onClick={() => {
+          if (data.nextWorkout) {
+            navigate(`/workout/${data.nextWorkout.groupId}`);
+          }
+        }}
+      >
         Start Workout
       </Button>
     </div>

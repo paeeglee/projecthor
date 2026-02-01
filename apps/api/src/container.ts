@@ -23,6 +23,7 @@ import { AddExerciseToGroupUseCase } from "./application/workout/add-exercise-to
 import { AddWorkoutGroupUseCase } from "./application/workout/add-workout-group.use-case";
 import { CreateWorkoutPlanUseCase } from "./application/workout/create-workout-plan.use-case";
 import { DeactivateWorkoutPlanUseCase } from "./application/workout/deactivate-workout-plan.use-case";
+import { GetGroupExercisesUseCase } from "./application/workout/get-group-exercises.use-case";
 import { GetWorkoutHistoryUseCase } from "./application/workout/get-workout-history.use-case";
 import { GetWorkoutPlanUseCase } from "./application/workout/get-workout-plan.use-case";
 import { LogWorkoutUseCase } from "./application/workout/log-workout.use-case";
@@ -180,6 +181,11 @@ const logWorkoutUseCase = new LogWorkoutUseCase(workoutLogRepository);
 const getWorkoutHistoryUseCase = new GetWorkoutHistoryUseCase(
   workoutLogRepository,
 );
+const getGroupExercisesUseCase = new GetGroupExercisesUseCase(
+  workoutGroupRepository,
+  workoutExerciseRepository,
+  exerciseRepository,
+);
 
 const mockAiClientRepository = new MockAiClientRepository();
 const generateWorkoutUseCase = new GenerateWorkoutUseCase(
@@ -224,6 +230,7 @@ export const container = {
   removeExerciseFromGroupUseCase,
   logWorkoutUseCase,
   getWorkoutHistoryUseCase,
+  getGroupExercisesUseCase,
   generateWorkoutUseCase,
   getWeekGoalsUseCase,
   getWorkoutSummaryUseCase,

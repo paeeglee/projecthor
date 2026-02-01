@@ -21,6 +21,7 @@ export interface WorkoutSummaryResponse {
     completedAt: string;
   } | null;
   nextWorkout: {
+    groupId: string;
     groupLabel: string;
   } | null;
 }

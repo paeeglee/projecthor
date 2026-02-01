@@ -4,6 +4,7 @@ export interface WorkoutSummaryData {
     completedAt: string;
   } | null;
   nextWorkout: {
+    groupId: string;
     groupLabel: string;
   } | null;
 }
