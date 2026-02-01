@@ -1,4 +1,5 @@
 import { Elysia } from "elysia";
+import type { GetMuscleGroupChartUseCase } from "../../application/dashboard/get-muscle-group-chart.use-case";
 import type { GetWeekGoalsUseCase } from "../../application/dashboard/get-week-goals.use-case";
 import type { GetWorkoutSummaryUseCase } from "../../application/dashboard/get-workout-summary.use-case";
 import type { authMiddlewarePlugin } from "../auth/auth-middleware.plugin";
@@ -7,6 +8,7 @@ interface DashboardUseCases {
   authMiddleware: ReturnType<typeof authMiddlewarePlugin>;
   getWeekGoals: GetWeekGoalsUseCase;
   getWorkoutSummary: GetWorkoutSummaryUseCase;
+  getMuscleGroupChart: GetMuscleGroupChartUseCase;
 }
 
 export const dashboardPlugin = (useCases: DashboardUseCases) =>
@@ -17,4 +19,7 @@ export const dashboardPlugin = (useCases: DashboardUseCases) =>
     })
     .get("/workout-summary", async ({ user }) => {
       return useCases.getWorkoutSummary.execute(user.id);
+    })
+    .get("/muscle-group-chart", async ({ user }) => {
+      return useCases.getMuscleGroupChart.execute(user.id);
     });

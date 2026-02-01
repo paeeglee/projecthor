@@ -81,6 +81,7 @@ new Elysia()
       authMiddleware,
       getWeekGoals: container.getWeekGoalsUseCase,
       getWorkoutSummary: container.getWorkoutSummaryUseCase,
+      getMuscleGroupChart: container.getMuscleGroupChartUseCase,
     }),
   )
   .listen(port, () => {

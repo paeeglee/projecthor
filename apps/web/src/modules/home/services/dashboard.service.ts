@@ -62,3 +62,19 @@ export async function getActivePlan(): Promise<ActivePlanResponse> {
   const { data } = await api.get<ActivePlanResponse>("/workout/plans/active");
   return data;
 }
+
+export interface MuscleGroupChartEntry {
+  name: string;
+  averageWeight: number;
+}
+
+export interface MuscleGroupChartResponse {
+  muscleGroups: MuscleGroupChartEntry[];
+}
+
+export async function getMuscleGroupChart(): Promise<MuscleGroupChartResponse> {
+  const { data } = await api.get<MuscleGroupChartResponse>(
+    "/dashboard/muscle-group-chart",
+  );
+  return data;
+}
