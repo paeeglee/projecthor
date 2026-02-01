@@ -78,3 +78,31 @@ export async function getMuscleGroupChart(): Promise<MuscleGroupChartResponse> {
   );
   return data;
 }
+
+export type MovementPattern = "squat" | "hinge" | "push" | "pull" | "core";
+
+export interface RelativeStrengthResponse {
+  score: number;
+  trend: "up" | "down" | "stable";
+  trendDelta: number;
+  bodyWeightStale: boolean;
+  breakdown: {
+    pattern: MovementPattern;
+    fr: number;
+  }[];
+  weeklyHistory: {
+    weekStart: string;
+    igfr: number;
+  }[];
+}
+
+export async function getRelativeStrength(): Promise<RelativeStrengthResponse | null> {
+  const { data } = await api.get<RelativeStrengthResponse | null>(
+    "/dashboard/relative-strength",
+  );
+  return data;
+}
+
+export async function updateBodyWeight(bodyWeight: number): Promise<void> {
+  await api.patch("/profiles/me/body-weight", { bodyWeight });
+}

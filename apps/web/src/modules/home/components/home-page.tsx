@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { useUserStore } from "@/modules/auth/stores/user-store";
 import { Button } from "@/modules/shared/ui/button";
 import { ActivePlanCarousel } from "./active-plan-carousel";
-import { MuscleGroupChart } from "./muscle-group-chart";
+import { RelativeStrengthCard } from "./relative-strength-card";
 import { WeekGoals } from "./week-goals";
 import { WorkoutSummary } from "./workout-summary";
 
@@ -23,7 +23,7 @@ export function HomePage() {
     <div className="flex min-h-svh flex-col gap-6 py-6">
       <WeekGoals />
       <WorkoutSummary onNextGroupResolved={setNextGroupId} />
-      <MuscleGroupChart />
+      <RelativeStrengthCard />
       <ActivePlanCarousel initialGroupId={nextGroupId} />
       <Button variant="outline" onClick={handleSignOut}>
         Sign out

@@ -16,6 +16,9 @@ import { RevalidateUseCase } from "./application/auth/revalidate.use-case";
 import { SignInUseCase } from "./application/auth/sign-in.use-case";
 import { SignUpUseCase } from "./application/auth/sign-up.use-case";
 import { GetMuscleGroupChartUseCase } from "./application/dashboard/get-muscle-group-chart.use-case";
+import { GetRelativeStrengthUseCase } from "./application/dashboard/get-relative-strength.use-case";
+import { CreateProfileUseCase } from "./application/profile/create-profile.use-case";
+import { UpdateBodyWeightUseCase } from "./application/profile/update-body-weight.use-case";
 import { GetWeekGoalsUseCase } from "./application/dashboard/get-week-goals.use-case";
 import { GetWorkoutSummaryUseCase } from "./application/dashboard/get-workout-summary.use-case";
 import { GetExerciseBySlugUseCase } from "./application/exercise/get-exercise-by-slug.use-case";
@@ -43,9 +46,11 @@ import { AuthRepository } from "./infrastructure/auth/auth.repository";
 import { AuthMiddlewareRepository } from "./infrastructure/auth/auth-middleware.repository";
 import { env } from "./infrastructure/config/env";
 import { MuscleGroupChartRepository } from "./infrastructure/dashboard/muscle-group-chart.repository";
+import { RelativeStrengthRepository } from "./infrastructure/dashboard/relative-strength.repository";
 import { WeekGoalsRepository } from "./infrastructure/dashboard/week-goals.repository";
 import { WorkoutSummaryRepository } from "./infrastructure/dashboard/workout-summary.repository";
 import { ExerciseRepository } from "./infrastructure/exercise/exercise.repository";
+import { ProfileRepository } from "./infrastructure/profile/profile.repository";
 import { HealthRepository } from "./infrastructure/health/health.repository";
 import { supabase, supabaseAdmin } from "./infrastructure/supabase/client";
 import { WorkoutExerciseRepository } from "./infrastructure/workout/workout-exercise.repository";
@@ -205,6 +210,18 @@ const getGroupExercisesUseCase = new GetGroupExercisesUseCase(
   workoutLogRepository,
 );
 
+const profileRepository = new ProfileRepository(supabaseAdmin);
+const createProfileUseCase = new CreateProfileUseCase(profileRepository);
+const updateBodyWeightUseCase = new UpdateBodyWeightUseCase(profileRepository);
+
+const relativeStrengthRepository = new RelativeStrengthRepository(
+  supabaseAdmin,
+);
+const getRelativeStrengthUseCase = new GetRelativeStrengthUseCase(
+  profileRepository,
+  relativeStrengthRepository,
+);
+
 const mockAiClientRepository = new MockAiClientRepository();
 const generateWorkoutUseCase = new GenerateWorkoutUseCase(
   mockAiClientRepository,
@@ -254,4 +271,7 @@ export const container = {
   getWeekGoalsUseCase,
   getWorkoutSummaryUseCase,
   getMuscleGroupChartUseCase,
+  createProfileUseCase,
+  updateBodyWeightUseCase,
+  getRelativeStrengthUseCase,
 };
