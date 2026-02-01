@@ -38,7 +38,7 @@ export function ActivePlanCarousel() {
   const { plan, groups } = data;
 
   return (
-    <div className="rounded-xl bg-surface py-4">
+    <div className="rounded-xl bg-surface pt-4 pb-4">
       <h2 className="mb-3 text-sm font-semibold text-white px-4">
         {plan.name}
       </h2>

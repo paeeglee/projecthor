@@ -24,9 +24,13 @@ export async function getGroupExercises(
   return data;
 }
 
-export async function logExerciseSet(
-  workoutExerciseId: string,
-  payload: { setsCompleted: number; repsCompleted: number; weight: number },
+export async function finishWorkoutSession(
+  groupId: string,
+  sets: Array<{
+    workoutExerciseId: string;
+    repsCompleted: number;
+    weight: number;
+  }>,
 ): Promise<void> {
-  await api.post(`/workout/exercises/${workoutExerciseId}/logs`, payload);
+  await api.post("/workout/sessions", { groupId, sets });
 }

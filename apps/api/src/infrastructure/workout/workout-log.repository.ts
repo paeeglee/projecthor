@@ -12,6 +12,7 @@ export class WorkoutLogRepository implements IWorkoutLogRepository {
     repsCompleted: number;
     weight: number;
     notes?: string;
+    workoutSessionId?: string;
   }): Promise<WorkoutLog> {
     const { data: row, error } = await this.supabase
       .from("workout_logs")
@@ -22,6 +23,7 @@ export class WorkoutLogRepository implements IWorkoutLogRepository {
         reps_completed: data.repsCompleted,
         weight: data.weight,
         notes: data.notes ?? null,
+        workout_session_id: data.workoutSessionId ?? null,
       })
       .select()
       .single();
@@ -52,6 +54,7 @@ export class WorkoutLogRepository implements IWorkoutLogRepository {
       repsCompleted: data.reps_completed as number,
       weight: Number(data.weight),
       notes: data.notes as string | null,
+      workoutSessionId: (data.workout_session_id as string) ?? null,
       completedAt: new Date(data.completed_at as string),
       createdAt: new Date(data.created_at as string),
     };

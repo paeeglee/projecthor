@@ -24,10 +24,10 @@ export class WeekGoalsRepository implements IWeekGoalsRepository {
       return this.emptyWeek(weekStart);
     }
 
-    // 2. Get groups with their exercises
+    // 2. Get groups to determine total goal
     const { data: groups, error: groupsError } = await this.supabase
       .from("workout_groups")
-      .select("id, workout_exercises(id)")
+      .select("id")
       .eq("workout_plan_id", plan.id);
 
     if (groupsError || !groups || groups.length === 0) {
@@ -35,55 +35,39 @@ export class WeekGoalsRepository implements IWeekGoalsRepository {
     }
 
     const totalGoal = groups.length;
+    const groupIds = groups.map((g) => g.id as string);
 
-    // 3. Get all workout logs for this athlete in the week range
-    const exerciseIds = groups.flatMap((g: Record<string, unknown>) =>
-      ((g.workout_exercises as Array<{ id: string }>) ?? []).map((e) => e.id),
-    );
-
-    if (exerciseIds.length === 0) {
-      return this.emptyWeek(weekStart);
-    }
-
-    const { data: logs, error: logsError } = await this.supabase
-      .from("workout_logs")
-      .select("workout_exercise_id, completed_at")
+    // 3. Get all sessions for this athlete in the week range
+    const { data: sessions, error: sessionsError } = await this.supabase
+      .from("workout_sessions")
+      .select("finished_at")
       .eq("athlete_id", athleteId)
-      .in("workout_exercise_id", exerciseIds)
-      .gte("completed_at", weekStart.toISOString())
-      .lte("completed_at", weekEnd.toISOString());
+      .in("workout_group_id", groupIds)
+      .gte("finished_at", weekStart.toISOString())
+      .lte("finished_at", weekEnd.toISOString());
 
-    if (logsError) {
+    if (sessionsError) {
       return this.emptyWeek(weekStart);
     }
 
-    // 4. Build a map: date string -> set of exercise IDs logged
-    const logsByDate = new Map<string, Set<string>>();
-    for (const log of logs ?? []) {
-      const dateStr = new Date(log.completed_at as string)
+    // 4. Build set of dates that have at least one session
+    const sessionDates = new Set<string>();
+    for (const session of sessions ?? []) {
+      const dateStr = new Date(session.finished_at as string)
         .toISOString()
         .split("T")[0];
-      if (!logsByDate.has(dateStr)) {
-        logsByDate.set(dateStr, new Set());
-      }
-      logsByDate.get(dateStr)!.add(log.workout_exercise_id as string);
+      sessionDates.add(dateStr);
     }
 
-    // 5. For each day, check if any group is fully completed
+    // 5. Build the 7-day array
     const completedDays = [];
     const current = new Date(weekStart);
     for (let i = 0; i < 7; i++) {
       const dateStr = current.toISOString().split("T")[0];
-      const loggedExercises = logsByDate.get(dateStr) ?? new Set();
-
-      const completed = groups.some((group: Record<string, unknown>) => {
-        const exercises =
-          (group.workout_exercises as Array<{ id: string }>) ?? [];
-        if (exercises.length === 0) return false;
-        return exercises.every((e) => loggedExercises.has(e.id));
+      completedDays.push({
+        date: dateStr,
+        completed: sessionDates.has(dateStr),
       });
-
-      completedDays.push({ date: dateStr, completed });
       current.setDate(current.getDate() + 1);
     }
 

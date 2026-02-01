@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router";
 import { Button } from "@/modules/shared/ui/button";
 import {
   getGroupExercises,
-  logExerciseSet,
+  finishWorkoutSession,
   type GroupExercisesResponse,
 } from "@/modules/workout/services/workout.service";
 import { ExerciseCard, type SetRow } from "./exercise-card";
@@ -86,24 +86,28 @@ export function WorkoutSessionPage() {
   );
 
   const handleFinish = async () => {
+    if (!groupId) return;
     setSubmitting(true);
-    const promises: Promise<void>[] = [];
+
+    const completedSets: Array<{
+      workoutExerciseId: string;
+      repsCompleted: number;
+      weight: number;
+    }> = [];
 
     for (const [exerciseId, sets] of Object.entries(setsMap)) {
       for (const set of sets) {
         if (!set.completed) continue;
-        promises.push(
-          logExerciseSet(exerciseId, {
-            setsCompleted: 1,
-            repsCompleted: set.reps,
-            weight: set.weight,
-          }),
-        );
+        completedSets.push({
+          workoutExerciseId: exerciseId,
+          repsCompleted: set.reps,
+          weight: set.weight,
+        });
       }
     }
 
     try {
-      await Promise.all(promises);
+      await finishWorkoutSession(groupId, completedSets);
       navigate("/home");
     } catch {
       setSubmitting(false);

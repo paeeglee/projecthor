@@ -5,7 +5,7 @@ const MOCK_RESPONSE = JSON.stringify({
   name: "Beginner 5-Day Muscle Building Plan",
   groups: [
     {
-      name: "Treino A",
+      name: "A",
       exercises: [
         {
           exerciseSlug: "machine-bench-press",
@@ -36,7 +36,7 @@ const MOCK_RESPONSE = JSON.stringify({
       ],
     },
     {
-      name: "Treino B",
+      name: "B",
       exercises: [
         {
           exerciseSlug: "wide-grip-lat-pulldown",
@@ -77,7 +77,7 @@ const MOCK_RESPONSE = JSON.stringify({
       ],
     },
     {
-      name: "Treino C",
+      name: "C",
       exercises: [
         { exerciseSlug: "leg-press", sets: 4, reps: "10-15", restSeconds: 90 },
         {
@@ -113,7 +113,7 @@ const MOCK_RESPONSE = JSON.stringify({
       ],
     },
     {
-      name: "Treino D",
+      name: "D",
       exercises: [
         {
           exerciseSlug: "seated-dumbbell-press",
@@ -149,7 +149,7 @@ const MOCK_RESPONSE = JSON.stringify({
       ],
     },
     {
-      name: "Treino E",
+      name: "E",
       exercises: [
         {
           exerciseSlug: "trap-bar-deadlift",

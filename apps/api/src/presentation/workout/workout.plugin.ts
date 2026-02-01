@@ -3,6 +3,7 @@ import type { AddExerciseToGroupUseCase } from "../../application/workout/add-ex
 import type { AddWorkoutGroupUseCase } from "../../application/workout/add-workout-group.use-case";
 import type { CreateWorkoutPlanUseCase } from "../../application/workout/create-workout-plan.use-case";
 import type { DeactivateWorkoutPlanUseCase } from "../../application/workout/deactivate-workout-plan.use-case";
+import type { FinishWorkoutSessionUseCase } from "../../application/workout/finish-workout-session.use-case";
 import type { GetGroupExercisesUseCase } from "../../application/workout/get-group-exercises.use-case";
 import type { GetWorkoutHistoryUseCase } from "../../application/workout/get-workout-history.use-case";
 import type { GetWorkoutPlanUseCase } from "../../application/workout/get-workout-plan.use-case";
@@ -18,6 +19,7 @@ import {
   CreateGroupBody,
   CreatePlanBody,
   ExerciseIdParams,
+  FinishSessionBody,
   GroupIdNestedParams,
   GroupIdParams,
   LogWorkoutBody,
@@ -42,6 +44,7 @@ interface WorkoutUseCases {
   updateExercise: UpdateGroupExerciseUseCase;
   removeExercise: RemoveExerciseFromGroupUseCase;
   logWorkout: LogWorkoutUseCase;
+  finishSession: FinishWorkoutSessionUseCase;
   getHistory: GetWorkoutHistoryUseCase;
   getGroupExercises: GetGroupExercisesUseCase;
 }
@@ -212,4 +215,17 @@ export const workoutPlugin = (useCases: WorkoutUseCases) =>
         return useCases.getHistory.execute(params.workoutExerciseId);
       },
       { params: WorkoutExerciseIdParams },
+    )
+    .post(
+      "/sessions",
+      async ({ body, user, set }) => {
+        const session = await useCases.finishSession.execute({
+          workoutGroupId: body.groupId,
+          athleteId: user.id,
+          sets: body.sets,
+        });
+        set.status = 201;
+        return session;
+      },
+      { body: FinishSessionBody },
     );

@@ -8,6 +8,7 @@ export interface IWorkoutLogRepository {
     repsCompleted: number;
     weight: number;
     notes?: string;
+    workoutSessionId?: string;
   }): Promise<WorkoutLog>;
   findByWorkoutExerciseId(workoutExerciseId: string): Promise<WorkoutLog[]>;
 }

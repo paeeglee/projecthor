@@ -20,10 +20,10 @@ export class WorkoutSummaryRepository implements IWorkoutSummaryRepository {
       return { lastWorkout: null, nextWorkout: null };
     }
 
-    // 2. Get groups ordered by display_order, with their exercises
+    // 2. Get groups ordered by display_order
     const { data: groups, error: groupsError } = await this.supabase
       .from("workout_groups")
-      .select("id, label, display_order, workout_exercises(id)")
+      .select("id, label, display_order")
       .eq("workout_plan_id", plan.id)
       .order("display_order", { ascending: true });
 
@@ -31,75 +31,46 @@ export class WorkoutSummaryRepository implements IWorkoutSummaryRepository {
       return { lastWorkout: null, nextWorkout: null };
     }
 
-    // 3. For each group, find if all exercises are logged and when
-    let lastCompletedGroup: { label: string; completedAt: string } | null =
-      null;
-    let lastCompletedIndex = -1;
+    const groupIds = groups.map((g) => g.id as string);
 
-    for (let i = 0; i < groups.length; i++) {
-      const group = groups[i];
-      const exercises =
-        (group.workout_exercises as Array<{ id: string }>) ?? [];
+    // 3. Find the most recent session for any group in this plan
+    const { data: lastSession } = await this.supabase
+      .from("workout_sessions")
+      .select("workout_group_id, finished_at")
+      .eq("athlete_id", athleteId)
+      .in("workout_group_id", groupIds)
+      .order("finished_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
-      if (exercises.length === 0) continue;
-
-      const exerciseIds = exercises.map((e) => e.id);
-
-      // Get the latest log for each exercise in this group
-      const { data: logs } = await this.supabase
-        .from("workout_logs")
-        .select("workout_exercise_id, completed_at")
-        .eq("athlete_id", athleteId)
-        .in("workout_exercise_id", exerciseIds)
-        .order("completed_at", { ascending: false });
-
-      if (!logs || logs.length === 0) continue;
-
-      // Check if all exercises have at least one log
-      const loggedExerciseIds = new Set(
-        logs.map((l) => l.workout_exercise_id as string),
-      );
-      const allLogged = exerciseIds.every((id) => loggedExerciseIds.has(id));
-
-      if (!allLogged) continue;
-
-      // Latest completion = the most recent log among this group's exercises
-      const latestLog = logs[0].completed_at as string;
-
-      if (
-        !lastCompletedGroup ||
-        new Date(latestLog) > new Date(lastCompletedGroup.completedAt)
-      ) {
-        lastCompletedGroup = {
-          label: group.label,
-          completedAt: latestLog,
-        };
-        lastCompletedIndex = i;
-      }
-    }
-
-    // 4. Determine next workout (cyclic rotation)
-    let nextWorkout: { groupId: string; groupLabel: string } | null = null;
-
-    if (lastCompletedIndex === -1) {
-      // No workout done yet — next is the first group
-      nextWorkout = { groupId: groups[0].id, groupLabel: groups[0].label };
-    } else {
-      const nextIndex = (lastCompletedIndex + 1) % groups.length;
-      nextWorkout = {
-        groupId: groups[nextIndex].id,
-        groupLabel: groups[nextIndex].label,
+    if (!lastSession) {
+      // No sessions yet — next is first group
+      return {
+        lastWorkout: null,
+        nextWorkout: { groupId: groups[0].id, groupLabel: groups[0].label },
       };
     }
 
+    // 4. Find last completed group info
+    const lastGroup = groups.find((g) => g.id === lastSession.workout_group_id);
+    const lastCompletedIndex = groups.findIndex(
+      (g) => g.id === lastSession.workout_group_id,
+    );
+
+    // 5. Determine next workout (cyclic)
+    const nextIndex = (lastCompletedIndex + 1) % groups.length;
+
     return {
-      lastWorkout: lastCompletedGroup
+      lastWorkout: lastGroup
         ? {
-            groupLabel: lastCompletedGroup.label,
-            completedAt: lastCompletedGroup.completedAt,
+            groupLabel: lastGroup.label,
+            completedAt: lastSession.finished_at as string,
           }
         : null,
-      nextWorkout,
+      nextWorkout: {
+        groupId: groups[nextIndex].id,
+        groupLabel: groups[nextIndex].label,
+      },
     };
   }
 }

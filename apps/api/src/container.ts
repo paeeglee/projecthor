@@ -26,6 +26,7 @@ import { DeactivateWorkoutPlanUseCase } from "./application/workout/deactivate-w
 import { GetGroupExercisesUseCase } from "./application/workout/get-group-exercises.use-case";
 import { GetWorkoutHistoryUseCase } from "./application/workout/get-workout-history.use-case";
 import { GetWorkoutPlanUseCase } from "./application/workout/get-workout-plan.use-case";
+import { FinishWorkoutSessionUseCase } from "./application/workout/finish-workout-session.use-case";
 import { LogWorkoutUseCase } from "./application/workout/log-workout.use-case";
 import { RemoveExerciseFromGroupUseCase } from "./application/workout/remove-exercise-from-group.use-case";
 import { RemoveWorkoutGroupUseCase } from "./application/workout/remove-workout-group.use-case";
@@ -48,6 +49,7 @@ import { supabase, supabaseAdmin } from "./infrastructure/supabase/client";
 import { WorkoutExerciseRepository } from "./infrastructure/workout/workout-exercise.repository";
 import { WorkoutGroupRepository } from "./infrastructure/workout/workout-group.repository";
 import { WorkoutLogRepository } from "./infrastructure/workout/workout-log.repository";
+import { WorkoutSessionRepository } from "./infrastructure/workout/workout-session.repository";
 import { WorkoutPlanRepository } from "./infrastructure/workout/workout-plan.repository";
 
 const healthRepository = new HealthRepository();
@@ -135,6 +137,7 @@ const workoutPlanRepository = new WorkoutPlanRepository(supabaseAdmin);
 const workoutGroupRepository = new WorkoutGroupRepository(supabaseAdmin);
 const workoutExerciseRepository = new WorkoutExerciseRepository(supabaseAdmin);
 const workoutLogRepository = new WorkoutLogRepository(supabaseAdmin);
+const workoutSessionRepository = new WorkoutSessionRepository(supabaseAdmin);
 
 const weekGoalsRepository = new WeekGoalsRepository(supabaseAdmin);
 const getWeekGoalsUseCase = new GetWeekGoalsUseCase(weekGoalsRepository);
@@ -178,6 +181,10 @@ const removeExerciseFromGroupUseCase = new RemoveExerciseFromGroupUseCase(
   workoutExerciseRepository,
 );
 const logWorkoutUseCase = new LogWorkoutUseCase(workoutLogRepository);
+const finishWorkoutSessionUseCase = new FinishWorkoutSessionUseCase(
+  workoutSessionRepository,
+  workoutLogRepository,
+);
 const getWorkoutHistoryUseCase = new GetWorkoutHistoryUseCase(
   workoutLogRepository,
 );
@@ -229,6 +236,7 @@ export const container = {
   updateGroupExerciseUseCase,
   removeExerciseFromGroupUseCase,
   logWorkoutUseCase,
+  finishWorkoutSessionUseCase,
   getWorkoutHistoryUseCase,
   getGroupExercisesUseCase,
   generateWorkoutUseCase,

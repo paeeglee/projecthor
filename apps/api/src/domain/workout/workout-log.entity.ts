@@ -6,6 +6,7 @@ export interface WorkoutLog {
   repsCompleted: number;
   weight: number;
   notes: string | null;
+  workoutSessionId: string | null;
   completedAt: Date;
   createdAt: Date;
 }

@@ -65,6 +65,7 @@ new Elysia()
       updateExercise: container.updateGroupExerciseUseCase,
       removeExercise: container.removeExerciseFromGroupUseCase,
       logWorkout: container.logWorkoutUseCase,
+      finishSession: container.finishWorkoutSessionUseCase,
       getHistory: container.getWorkoutHistoryUseCase,
       getGroupExercises: container.getGroupExercisesUseCase,
     }),

@@ -67,3 +67,14 @@ export const LogWorkoutBody = Type.Object({
   weight: Type.Number({ minimum: 0 }),
   notes: Type.Optional(Type.String()),
 });
+
+export const FinishSessionBody = Type.Object({
+  groupId: Type.String({ minLength: 1 }),
+  sets: Type.Array(
+    Type.Object({
+      workoutExerciseId: Type.String({ minLength: 1 }),
+      repsCompleted: Type.Number({ minimum: 0 }),
+      weight: Type.Number({ minimum: 0 }),
+    }),
+  ),
+});
