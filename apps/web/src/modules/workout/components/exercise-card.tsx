@@ -16,7 +16,7 @@ interface ExerciseCardProps {
     field: "reps" | "weight",
     value: number,
   ) => void;
-  onSetComplete: (exerciseId: string, setIndex: number) => void;
+  onSetComplete?: (exerciseId: string, setIndex: number) => void;
 }
 
 export function ExerciseCard({
@@ -81,7 +81,7 @@ export function ExerciseCard({
             <input
               type="number"
               inputMode="decimal"
-              value={set.weight || ""}
+              value={set.completed ? set.weight : set.weight || ""}
               onChange={(e) => handleChange(i, "weight", e.target.value)}
               disabled={set.completed}
               placeholder="kg"
@@ -89,8 +89,9 @@ export function ExerciseCard({
             />
             <button
               type="button"
-              onClick={() => onSetComplete(exerciseId, i)}
-              className="flex size-9 items-center justify-center justify-self-center rounded-full transition-colors"
+              onClick={() => onSetComplete?.(exerciseId, i)}
+              disabled={!onSetComplete}
+              className="flex size-9 items-center justify-center justify-self-center rounded-full transition-colors disabled:opacity-50"
             >
               <div
                 className={`size-5 rounded-full border-2 transition-colors ${

@@ -7,6 +7,7 @@ import {
   type GroupExercisesResponse,
 } from "@/modules/workout/services/workout.service";
 import { ExerciseCard, type SetRow } from "./exercise-card";
+import { RestTimer } from "./rest-timer";
 
 export function WorkoutSessionPage() {
   const { groupId } = useParams<{ groupId: string }>();
@@ -16,6 +17,10 @@ export function WorkoutSessionPage() {
   const [error, setError] = useState(false);
   const [setsMap, setSetsMap] = useState<Record<string, SetRow[]>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [restTimer, setRestTimer] = useState<{
+    visible: boolean;
+    seconds: number;
+  }>({ visible: false, seconds: 0 });
 
   useEffect(() => {
     if (!groupId) return;
@@ -55,15 +60,25 @@ export function WorkoutSessionPage() {
   const handleSetComplete = useCallback(
     (exerciseId: string, setIndex: number) => {
       setSetsMap((prev) => {
+        const wasCompleted = prev[exerciseId]?.[setIndex]?.completed;
         const updated = [...(prev[exerciseId] ?? [])];
         updated[setIndex] = {
           ...updated[setIndex],
           completed: !updated[setIndex].completed,
+          weight: updated[setIndex].weight || 0,
         };
+
+        if (!wasCompleted && data) {
+          const exercise = data.exercises.find((ex) => ex.id === exerciseId);
+          if (exercise?.restSeconds) {
+            setRestTimer({ visible: true, seconds: exercise.restSeconds });
+          }
+        }
+
         return { ...prev, [exerciseId]: updated };
       });
     },
-    [],
+    [data],
   );
 
   const hasCompletedSets = Object.values(setsMap).some((sets) =>
@@ -125,7 +140,7 @@ export function WorkoutSessionPage() {
             exerciseName={exercise.exerciseName}
             sets={setsMap[exercise.id] ?? []}
             onSetChange={handleSetChange}
-            onSetComplete={handleSetComplete}
+            onSetComplete={restTimer.visible ? undefined : handleSetComplete}
           />
         ))}
       </div>
@@ -140,6 +155,14 @@ export function WorkoutSessionPage() {
           {submitting ? "Finishing..." : "Finish Workout"}
         </Button>
       </div>
+
+      {restTimer.visible && (
+        <RestTimer
+          key={restTimer.seconds + Date.now()}
+          seconds={restTimer.seconds}
+          onDismiss={() => setRestTimer({ visible: false, seconds: 0 })}
+        />
+      )}
     </div>
   );
 }
