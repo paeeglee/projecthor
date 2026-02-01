@@ -24,6 +24,8 @@ export function WorkoutSessionPage() {
     key: number;
   }>({ visible: false, seconds: 0, key: 0 });
   const [elapsed, setElapsed] = useState(0);
+  const [showTimerConfirm, setShowTimerConfirm] = useState(false);
+  const [timerPaused, setTimerPaused] = useState(false);
 
   useEffect(() => {
     if (!groupId) return;
@@ -61,13 +63,22 @@ export function WorkoutSessionPage() {
   }, [groupId]);
 
   useEffect(() => {
-    if (!groupId) return;
+    if (!groupId || timerPaused) return;
 
     const key = `workout-timer-${groupId}`;
     let startTimestamp = Number(localStorage.getItem(key));
+
     if (!startTimestamp) {
       startTimestamp = Date.now();
       localStorage.setItem(key, String(startTimestamp));
+    } else {
+      const elapsedSeconds = Math.floor((Date.now() - startTimestamp) / 1000);
+      if (elapsedSeconds > 45 * 60 && !showTimerConfirm && elapsed === 0) {
+        setElapsed(elapsedSeconds);
+        setShowTimerConfirm(true);
+        setTimerPaused(true);
+        return;
+      }
     }
 
     setElapsed(Math.floor((Date.now() - startTimestamp) / 1000));
@@ -77,7 +88,21 @@ export function WorkoutSessionPage() {
     }, 1000);
 
     return () => clearInterval(id);
-  }, [groupId]);
+  }, [groupId, timerPaused]);
+
+  const handleTimerContinue = () => {
+    setShowTimerConfirm(false);
+    setTimerPaused(false);
+  };
+
+  const handleTimerReset = () => {
+    if (!groupId) return;
+    const key = `workout-timer-${groupId}`;
+    localStorage.setItem(key, String(Date.now()));
+    setElapsed(0);
+    setShowTimerConfirm(false);
+    setTimerPaused(false);
+  };
 
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
@@ -283,6 +308,36 @@ export function WorkoutSessionPage() {
                 onClick={() => blocker.proceed?.()}
               >
                 Leave
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showTimerConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="mx-4 flex w-full max-w-sm flex-col gap-4 rounded-lg bg-surface p-6">
+            <h2 className="text-lg font-bold text-white">
+              Workout in progress
+            </h2>
+            <p className="text-sm text-text-muted">
+              Your timer is at{" "}
+              <span className="font-mono text-white">
+                {formatTime(elapsed)}
+              </span>
+              . That's over 45 minutes. Do you want to reset the timer or
+              continue where you left off?
+            </p>
+            <div className="flex gap-3">
+              <Button
+                className="flex-1"
+                variant="ghost"
+                onClick={handleTimerReset}
+              >
+                Reset
+              </Button>
+              <Button className="flex-1" onClick={handleTimerContinue}>
+                Continue
               </Button>
             </div>
           </div>
