@@ -20,7 +20,8 @@ export function WorkoutSessionPage() {
   const [restTimer, setRestTimer] = useState<{
     visible: boolean;
     seconds: number;
-  }>({ visible: false, seconds: 0 });
+    key: number;
+  }>({ visible: false, seconds: 0, key: 0 });
   const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
@@ -104,7 +105,11 @@ export function WorkoutSessionPage() {
         if (!wasCompleted && data) {
           const exercise = data.exercises.find((ex) => ex.id === exerciseId);
           if (exercise?.restSeconds) {
-            setRestTimer({ visible: true, seconds: exercise.restSeconds });
+            setRestTimer({
+              visible: true,
+              seconds: exercise.restSeconds,
+              key: Date.now(),
+            });
           }
         }
 
@@ -249,9 +254,9 @@ export function WorkoutSessionPage() {
 
       {restTimer.visible && (
         <RestTimer
-          key={restTimer.seconds + Date.now()}
+          key={restTimer.key}
           seconds={restTimer.seconds}
-          onDismiss={() => setRestTimer({ visible: false, seconds: 0 })}
+          onDismiss={() => setRestTimer({ visible: false, seconds: 0, key: 0 })}
         />
       )}
     </div>
