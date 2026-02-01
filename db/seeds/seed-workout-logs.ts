@@ -243,16 +243,18 @@ async function seed() {
     for (const exercise of group.exercises) {
       const weight = getWeight(exercise.slug, weekIndex);
 
-      logRows.push({
-        workout_exercise_id: exercise.id,
-        athlete_id: ATHLETE_ID,
-        sets_completed: exercise.sets,
-        reps_completed: exercise.reps,
-        weight,
-        workout_session_id: sessionId,
-        completed_at: sessionDate.toISOString(),
-        created_at: sessionDate.toISOString(),
-      });
+      for (let s = 0; s < exercise.sets; s++) {
+        logRows.push({
+          workout_exercise_id: exercise.id,
+          athlete_id: ATHLETE_ID,
+          sets_completed: 1,
+          reps_completed: exercise.reps,
+          weight,
+          workout_session_id: sessionId,
+          completed_at: new Date(sessionDate.getTime() + s * 1000).toISOString(),
+          created_at: new Date(sessionDate.getTime() + s * 1000).toISOString(),
+        });
+      }
     }
   }
 

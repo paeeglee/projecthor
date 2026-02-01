@@ -8,6 +8,7 @@ interface GroupExercise {
   restSeconds: number | null;
   notes: string | null;
   displayOrder: number;
+  lastSession: Array<{ reps: number; weight: number }> | null;
 }
 
 export interface GroupExercisesResponse {

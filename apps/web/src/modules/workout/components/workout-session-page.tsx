@@ -32,9 +32,9 @@ export function WorkoutSessionPage() {
         setData(res);
         const initial: Record<string, SetRow[]> = {};
         for (const ex of res.exercises) {
-          initial[ex.id] = Array.from({ length: ex.sets }, () => ({
-            reps: ex.reps,
-            weight: 0,
+          initial[ex.id] = Array.from({ length: ex.sets }, (_, i) => ({
+            reps: ex.lastSession?.[i]?.reps ?? ex.reps,
+            weight: ex.lastSession?.[i]?.weight ?? 0,
             completed: false,
           }));
         }

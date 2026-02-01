@@ -45,6 +45,17 @@ export class WorkoutLogRepository implements IWorkoutLogRepository {
     return (data ?? []).map((row) => this.toEntity(row));
   }
 
+  async findBySessionId(sessionId: string): Promise<WorkoutLog[]> {
+    const { data, error } = await this.supabase
+      .from("workout_logs")
+      .select()
+      .eq("workout_session_id", sessionId)
+      .order("created_at", { ascending: true });
+
+    if (error) throw error;
+    return (data ?? []).map((row) => this.toEntity(row));
+  }
+
   private toEntity(data: Record<string, unknown>): WorkoutLog {
     return {
       id: data.id as string,

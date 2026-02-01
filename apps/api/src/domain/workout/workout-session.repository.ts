@@ -6,4 +6,8 @@ export interface IWorkoutSessionRepository {
     athleteId: string;
     durationSeconds?: number;
   }): Promise<WorkoutSession>;
+  findLastByGroupAndAthlete(
+    groupId: string,
+    athleteId: string,
+  ): Promise<WorkoutSession | null>;
 }

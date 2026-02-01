@@ -24,6 +24,23 @@ export class WorkoutSessionRepository implements IWorkoutSessionRepository {
     return this.toEntity(row);
   }
 
+  async findLastByGroupAndAthlete(
+    groupId: string,
+    athleteId: string,
+  ): Promise<WorkoutSession | null> {
+    const { data: row, error } = await this.supabase
+      .from("workout_sessions")
+      .select()
+      .eq("workout_group_id", groupId)
+      .eq("athlete_id", athleteId)
+      .order("finished_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) throw error;
+    return row ? this.toEntity(row) : null;
+  }
+
   private toEntity(data: Record<string, unknown>): WorkoutSession {
     return {
       id: data.id as string,

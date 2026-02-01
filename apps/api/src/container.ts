@@ -201,6 +201,8 @@ const getGroupExercisesUseCase = new GetGroupExercisesUseCase(
   workoutGroupRepository,
   workoutExerciseRepository,
   exerciseRepository,
+  workoutSessionRepository,
+  workoutLogRepository,
 );
 
 const mockAiClientRepository = new MockAiClientRepository();

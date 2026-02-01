@@ -11,4 +11,5 @@ export interface IWorkoutLogRepository {
     workoutSessionId?: string;
   }): Promise<WorkoutLog>;
   findByWorkoutExerciseId(workoutExerciseId: string): Promise<WorkoutLog[]>;
+  findBySessionId(sessionId: string): Promise<WorkoutLog[]>;
 }

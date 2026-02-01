@@ -71,8 +71,11 @@ export const workoutPlugin = (useCases: WorkoutUseCases) =>
     })
     .get(
       "/groups/:groupId/exercises",
-      async ({ params, set }) => {
-        const result = await useCases.getGroupExercises.execute(params.groupId);
+      async ({ params, user, set }) => {
+        const result = await useCases.getGroupExercises.execute(
+          params.groupId,
+          user.id,
+        );
         if (!result) {
           set.status = 404;
           return { error: "Group not found" };
