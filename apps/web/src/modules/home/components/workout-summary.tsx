@@ -7,17 +7,27 @@ import {
 import { Button } from "@/modules/shared/ui/button";
 import { WorkoutSummarySkeleton } from "./workout-summary-skeleton";
 
-export function WorkoutSummary() {
+interface WorkoutSummaryProps {
+  onNextGroupResolved?: (groupId: string | null) => void;
+}
+
+export function WorkoutSummary({ onNextGroupResolved }: WorkoutSummaryProps) {
   const navigate = useNavigate();
   const [data, setData] = useState<WorkoutSummaryResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getWorkoutSummary()
-      .then(setData)
-      .catch(() => setData({ lastWorkout: null, nextWorkout: null }))
+      .then((res) => {
+        setData(res);
+        onNextGroupResolved?.(res.nextWorkout?.groupId ?? null);
+      })
+      .catch(() => {
+        setData({ lastWorkout: null, nextWorkout: null });
+        onNextGroupResolved?.(null);
+      })
       .finally(() => setLoading(false));
-  }, []);
+  }, [onNextGroupResolved]);
 
   if (loading) return <WorkoutSummarySkeleton />;
   if (!data) return null;

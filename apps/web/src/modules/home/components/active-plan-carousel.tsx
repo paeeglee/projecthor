@@ -5,7 +5,13 @@ import {
 } from "@/modules/home/services/dashboard.service";
 import { ActivePlanCarouselSkeleton } from "./active-plan-carousel-skeleton";
 
-export function ActivePlanCarousel() {
+interface ActivePlanCarouselProps {
+  initialGroupId?: string | null;
+}
+
+export function ActivePlanCarousel({
+  initialGroupId,
+}: ActivePlanCarouselProps) {
   const [data, setData] = useState<ActivePlanResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -18,6 +24,17 @@ export function ActivePlanCarousel() {
       .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (!data || !initialGroupId) return;
+    const index = data.groups.findIndex((g) => g.id === initialGroupId);
+    if (index <= 0) return;
+    setActiveIndex(index);
+    const el = scrollRef.current;
+    if (el) {
+      el.scrollTo({ left: index * el.clientWidth, behavior: "instant" });
+    }
+  }, [data, initialGroupId]);
 
   const handleScroll = useCallback(() => {
     const el = scrollRef.current;
