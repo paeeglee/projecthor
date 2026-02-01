@@ -4,5 +4,6 @@ export interface IWorkoutSessionRepository {
   create(data: {
     workoutGroupId: string;
     athleteId: string;
+    durationSeconds?: number;
   }): Promise<WorkoutSession>;
 }

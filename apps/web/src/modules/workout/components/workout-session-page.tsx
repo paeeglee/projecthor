@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, useBlocker } from "react-router";
 import { Button } from "@/modules/shared/ui/button";
 import {
   getGroupExercises,
@@ -21,6 +21,7 @@ export function WorkoutSessionPage() {
     visible: boolean;
     seconds: number;
   }>({ visible: false, seconds: 0 });
+  const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
     if (!groupId) return;
@@ -40,6 +41,38 @@ export function WorkoutSessionPage() {
       .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, [groupId]);
+
+  useEffect(() => {
+    if (!groupId) return;
+
+    const key = `workout-timer-${groupId}`;
+    let startTimestamp = Number(localStorage.getItem(key));
+    if (!startTimestamp) {
+      startTimestamp = Date.now();
+      localStorage.setItem(key, String(startTimestamp));
+    }
+
+    setElapsed(Math.floor((Date.now() - startTimestamp) / 1000));
+
+    const id = setInterval(() => {
+      setElapsed(Math.floor((Date.now() - startTimestamp) / 1000));
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, [groupId]);
+
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, []);
+
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      !submitting && currentLocation.pathname !== nextLocation.pathname,
+  );
 
   const handleSetChange = useCallback(
     (
@@ -85,6 +118,13 @@ export function WorkoutSessionPage() {
     sets.some((s) => s.completed),
   );
 
+  const formatTime = (totalSeconds: number) => {
+    const h = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+    const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+    const s = String(totalSeconds % 60).padStart(2, "0");
+    return `${h}:${m}:${s}`;
+  };
+
   const handleFinish = async () => {
     if (!groupId) return;
     setSubmitting(true);
@@ -106,8 +146,13 @@ export function WorkoutSessionPage() {
       }
     }
 
+    const key = `workout-timer-${groupId}`;
+    const startTimestamp = Number(localStorage.getItem(key)) || Date.now();
+    const durationSeconds = Math.floor((Date.now() - startTimestamp) / 1000);
+
     try {
-      await finishWorkoutSession(groupId, completedSets);
+      await finishWorkoutSession(groupId, completedSets, durationSeconds);
+      localStorage.removeItem(key);
       navigate("/home");
     } catch {
       setSubmitting(false);
@@ -133,7 +178,22 @@ export function WorkoutSessionPage() {
   return (
     <div className="flex min-h-svh flex-col">
       <div className="sticky top-0 z-10 bg-background py-4">
-        <h1 className="text-lg font-bold text-white">{data.group.label}</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-lg font-bold text-white">{data.group.label}</h1>
+          <span className="flex items-center font-mono text-sm text-text-muted">
+            <span className="size-2 rounded-full bg-red-500 mr-2" />
+            {formatTime(elapsed)
+              .split(":")
+              .map((part, i, arr) => (
+                <span key={i}>
+                  {part}
+                  {i < arr.length - 1 && (
+                    <span className="text-primary">:</span>
+                  )}
+                </span>
+              ))}
+          </span>
+        </div>
       </div>
 
       <div className="flex flex-col gap-4">
@@ -159,6 +219,33 @@ export function WorkoutSessionPage() {
           {submitting ? "Finishing..." : "Finish Workout"}
         </Button>
       </div>
+
+      {blocker.state === "blocked" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="mx-4 flex w-full max-w-sm flex-col gap-4 rounded-lg bg-surface p-6">
+            <h2 className="text-lg font-bold text-white">Leave workout?</h2>
+            <p className="text-sm text-text-muted">
+              Your timer will keep running. You can return to continue.
+            </p>
+            <div className="flex gap-3">
+              <Button
+                className="flex-1"
+                variant="ghost"
+                onClick={() => blocker.reset?.()}
+              >
+                Stay
+              </Button>
+              <Button
+                className="flex-1"
+                variant="destructive"
+                onClick={() => blocker.proceed?.()}
+              >
+                Leave
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {restTimer.visible && (
         <RestTimer

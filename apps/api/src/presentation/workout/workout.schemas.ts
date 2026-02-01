@@ -77,4 +77,5 @@ export const FinishSessionBody = Type.Object({
       weight: Type.Number({ minimum: 0 }),
     }),
   ),
+  durationSeconds: Type.Optional(Type.Number({ minimum: 0 })),
 });

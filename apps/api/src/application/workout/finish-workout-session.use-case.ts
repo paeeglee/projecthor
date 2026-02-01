@@ -11,6 +11,7 @@ export class FinishWorkoutSessionUseCase {
   async execute(data: {
     workoutGroupId: string;
     athleteId: string;
+    durationSeconds?: number;
     sets: Array<{
       workoutExerciseId: string;
       repsCompleted: number;
@@ -20,6 +21,7 @@ export class FinishWorkoutSessionUseCase {
     const session = await this.sessionRepository.create({
       workoutGroupId: data.workoutGroupId,
       athleteId: data.athleteId,
+      durationSeconds: data.durationSeconds,
     });
 
     for (const set of data.sets) {

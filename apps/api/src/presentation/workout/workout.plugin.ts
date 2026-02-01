@@ -223,6 +223,7 @@ export const workoutPlugin = (useCases: WorkoutUseCases) =>
           workoutGroupId: body.groupId,
           athleteId: user.id,
           sets: body.sets,
+          durationSeconds: body.durationSeconds,
         });
         set.status = 201;
         return session;

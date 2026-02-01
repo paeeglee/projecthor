@@ -8,12 +8,14 @@ export class WorkoutSessionRepository implements IWorkoutSessionRepository {
   async create(data: {
     workoutGroupId: string;
     athleteId: string;
+    durationSeconds?: number;
   }): Promise<WorkoutSession> {
     const { data: row, error } = await this.supabase
       .from("workout_sessions")
       .insert({
         workout_group_id: data.workoutGroupId,
         athlete_id: data.athleteId,
+        duration_seconds: data.durationSeconds ?? null,
       })
       .select()
       .single();
@@ -27,6 +29,7 @@ export class WorkoutSessionRepository implements IWorkoutSessionRepository {
       id: data.id as string,
       workoutGroupId: data.workout_group_id as string,
       athleteId: data.athlete_id as string,
+      durationSeconds: (data.duration_seconds as number) ?? null,
       finishedAt: new Date(data.finished_at as string),
       createdAt: new Date(data.created_at as string),
     };

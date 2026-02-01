@@ -31,6 +31,7 @@ export async function finishWorkoutSession(
     repsCompleted: number;
     weight: number;
   }>,
+  durationSeconds: number,
 ): Promise<void> {
-  await api.post("/workout/sessions", { groupId, sets });
+  await api.post("/workout/sessions", { groupId, sets, durationSeconds });
 }
