@@ -78,15 +78,19 @@ export function ExerciseCard({
               disabled={set.completed}
               className="h-9 min-w-0 rounded-md bg-surface-light px-2 text-sm text-white outline-none disabled:opacity-50"
             />
-            <input
-              type="number"
-              inputMode="decimal"
-              value={set.completed ? set.weight : set.weight || ""}
-              onChange={(e) => handleChange(i, "weight", e.target.value)}
-              disabled={set.completed}
-              placeholder="kg"
-              className="h-9 min-w-0 rounded-md bg-surface-light px-2 text-sm text-white placeholder:text-text-muted outline-none disabled:opacity-50"
-            />
+            <div className="relative">
+              <input
+                type="number"
+                inputMode="decimal"
+                value={set.completed ? set.weight : set.weight || ""}
+                onChange={(e) => handleChange(i, "weight", e.target.value)}
+                disabled={set.completed}
+                className="h-9 w-full min-w-0 rounded-md bg-surface-light px-2 pr-7 text-sm text-white outline-none disabled:opacity-50"
+              />
+              <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-text-muted">
+                kg
+              </span>
+            </div>
             <button
               type="button"
               onClick={() => onSetComplete?.(exerciseId, i)}

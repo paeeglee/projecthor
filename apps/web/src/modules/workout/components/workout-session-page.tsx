@@ -6,6 +6,7 @@ import {
   finishWorkoutSession,
   type GroupExercisesResponse,
 } from "@/modules/workout/services/workout.service";
+import { CircularProgress } from "@/modules/shared/ui/circular-progress";
 import { ExerciseCard, type SetRow } from "./exercise-card";
 import { RestTimer } from "./rest-timer";
 
@@ -180,11 +181,25 @@ export function WorkoutSessionPage() {
     );
   }
 
+  const totalSets = Object.values(setsMap).reduce(
+    (sum, sets) => sum + sets.length,
+    0,
+  );
+  const completedSetsCount = Object.values(setsMap).reduce(
+    (sum, sets) => sum + sets.filter((s) => s.completed).length,
+    0,
+  );
+  const workoutProgress =
+    totalSets > 0 ? (completedSetsCount / totalSets) * 100 : 0;
+
   return (
     <div className="flex min-h-svh flex-col">
       <div className="sticky top-0 z-10 bg-background py-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-lg font-bold text-white">{data.group.label}</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg font-bold text-white">{data.group.label}</h1>
+            <CircularProgress value={workoutProgress} />
+          </div>
           <span className="flex items-center font-mono text-sm text-text-muted">
             <span className="size-2 rounded-full bg-red-500 mr-2" />
             {formatTime(elapsed)
