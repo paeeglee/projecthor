@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams, useBlocker } from "react-router";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/modules/shared/ui/button";
 import {
   getGroupExercises,
   finishWorkoutSession,
-  type GroupExercisesResponse,
 } from "@/modules/workout/services/workout.service";
 import { CircularProgress } from "@/modules/shared/ui/circular-progress";
 import { ExerciseCard, type SetRow } from "./exercise-card";
@@ -13,11 +13,8 @@ import { RestTimer } from "./rest-timer";
 export function WorkoutSessionPage() {
   const { groupId } = useParams<{ groupId: string }>();
   const navigate = useNavigate();
-  const [data, setData] = useState<GroupExercisesResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const queryClient = useQueryClient();
   const [setsMap, setSetsMap] = useState<Record<string, SetRow[]>>({});
-  const [submitting, setSubmitting] = useState(false);
   const [restTimer, setRestTimer] = useState<{
     visible: boolean;
     seconds: number;
@@ -27,40 +24,46 @@ export function WorkoutSessionPage() {
   const [showTimerConfirm, setShowTimerConfirm] = useState(false);
   const [timerPaused, setTimerPaused] = useState(false);
 
+  const {
+    data,
+    isLoading: loading,
+    isError: error,
+  } = useQuery({
+    queryKey: ["exercises", groupId],
+    queryFn: () => getGroupExercises(groupId!),
+    enabled: !!groupId,
+  });
+
   useEffect(() => {
-    if (!groupId) return;
-    getGroupExercises(groupId)
-      .then((res) => {
-        setData(res);
-        const initial: Record<string, SetRow[]> = {};
-        for (const ex of res.exercises) {
-          initial[ex.id] = Array.from({ length: ex.sets }, (_, i) => ({
-            reps: ex.lastSession?.[i]?.reps ?? ex.reps,
-            weight: ex.lastSession?.[i]?.weight ?? 0,
-            completed: false,
-          }));
-        }
+    if (!data || !groupId) return;
+    if (Object.keys(setsMap).length > 0) return;
 
-        const savedRaw = localStorage.getItem(`workout-sets-${groupId}`);
-        if (savedRaw) {
-          try {
-            const saved: Record<string, SetRow[]> = JSON.parse(savedRaw);
-            const savedKeys = Object.keys(saved).sort().join(",");
-            const initialKeys = Object.keys(initial).sort().join(",");
-            if (savedKeys === initialKeys) {
-              setSetsMap(saved);
-              return;
-            }
-          } catch {
-            // corrupted data, fall through to default
-          }
-        }
+    const initial: Record<string, SetRow[]> = {};
+    for (const ex of data.exercises) {
+      initial[ex.id] = Array.from({ length: ex.sets }, (_, i) => ({
+        reps: ex.lastSession?.[i]?.reps ?? ex.reps,
+        weight: ex.lastSession?.[i]?.weight ?? 0,
+        completed: false,
+      }));
+    }
 
-        setSetsMap(initial);
-      })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, [groupId]);
+    const savedRaw = localStorage.getItem(`workout-sets-${groupId}`);
+    if (savedRaw) {
+      try {
+        const saved: Record<string, SetRow[]> = JSON.parse(savedRaw);
+        const savedKeys = Object.keys(saved).sort().join(",");
+        const initialKeys = Object.keys(initial).sort().join(",");
+        if (savedKeys === initialKeys) {
+          setSetsMap(saved);
+          return;
+        }
+      } catch {
+        // corrupted data, fall through to default
+      }
+    }
+
+    setSetsMap(initial);
+  }, [data, groupId]);
 
   useEffect(() => {
     if (!groupId || timerPaused) return;
@@ -119,7 +122,8 @@ export function WorkoutSessionPage() {
 
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
-      !submitting && currentLocation.pathname !== nextLocation.pathname,
+      !finishMutation.isPending &&
+      currentLocation.pathname !== nextLocation.pathname,
   );
 
   const handleSetChange = useCallback(
@@ -177,40 +181,42 @@ export function WorkoutSessionPage() {
     return `${h}:${m}:${s}`;
   };
 
-  const handleFinish = async () => {
-    if (!groupId) return;
-    setSubmitting(true);
+  const finishMutation = useMutation({
+    mutationFn: async () => {
+      if (!groupId) return;
+      const completedSets: Array<{
+        workoutExerciseId: string;
+        repsCompleted: number;
+        weight: number;
+      }> = [];
 
-    const completedSets: Array<{
-      workoutExerciseId: string;
-      repsCompleted: number;
-      weight: number;
-    }> = [];
-
-    for (const [exerciseId, sets] of Object.entries(setsMap)) {
-      for (const set of sets) {
-        if (!set.completed) continue;
-        completedSets.push({
-          workoutExerciseId: exerciseId,
-          repsCompleted: set.reps,
-          weight: set.weight,
-        });
+      for (const [exerciseId, sets] of Object.entries(setsMap)) {
+        for (const set of sets) {
+          if (!set.completed) continue;
+          completedSets.push({
+            workoutExerciseId: exerciseId,
+            repsCompleted: set.reps,
+            weight: set.weight,
+          });
+        }
       }
-    }
 
-    const key = `workout-timer-${groupId}`;
-    const startTimestamp = Number(localStorage.getItem(key)) || Date.now();
-    const durationSeconds = Math.floor((Date.now() - startTimestamp) / 1000);
+      const key = `workout-timer-${groupId}`;
+      const startTimestamp = Number(localStorage.getItem(key)) || Date.now();
+      const durationSeconds = Math.floor((Date.now() - startTimestamp) / 1000);
 
-    try {
       await finishWorkoutSession(groupId, completedSets, durationSeconds);
       localStorage.removeItem(key);
       localStorage.removeItem(`workout-sets-${groupId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["week-goals"] });
+      queryClient.invalidateQueries({ queryKey: ["workout-summary"] });
+      queryClient.invalidateQueries({ queryKey: ["relative-strength"] });
+      queryClient.invalidateQueries({ queryKey: ["muscle-group-chart"] });
       navigate("/home");
-    } catch {
-      setSubmitting(false);
-    }
-  };
+    },
+  });
 
   if (loading) {
     return (
@@ -280,10 +286,10 @@ export function WorkoutSessionPage() {
         <Button
           className="w-full"
           size="lg"
-          disabled={!hasCompletedSets || submitting}
-          onClick={handleFinish}
+          disabled={!hasCompletedSets || finishMutation.isPending}
+          onClick={() => finishMutation.mutate()}
         >
-          {submitting ? "Finishing..." : "Finish Workout"}
+          {finishMutation.isPending ? "Finishing..." : "Finish Workout"}
         </Button>
       </div>
 

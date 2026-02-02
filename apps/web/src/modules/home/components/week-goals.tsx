@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 import {
   getWeekGoals,
@@ -9,17 +9,16 @@ import { WeekGoalsSkeleton } from "./week-goals-skeleton";
 const DAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"];
 
 export function WeekGoals() {
-  const [data, setData] = useState<WeekGoalsResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading } = useQuery({
+    queryKey: ["week-goals"],
+    queryFn: getWeekGoals,
+    placeholderData: {
+      totalGoal: 0,
+      completedDays: buildEmptyWeek(),
+    } as WeekGoalsResponse,
+  });
 
-  useEffect(() => {
-    getWeekGoals()
-      .then(setData)
-      .catch(() => setData({ totalGoal: 0, completedDays: buildEmptyWeek() }))
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) return <WeekGoalsSkeleton />;
+  if (isLoading) return <WeekGoalsSkeleton />;
   if (!data) return null;
 
   const completedCount = data.completedDays.filter((d) => d.completed).length;

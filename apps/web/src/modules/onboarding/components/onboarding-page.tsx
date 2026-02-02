@@ -2,7 +2,8 @@ import type { IChangeEvent } from "@rjsf/core";
 import Form from "@rjsf/core";
 import type { RJSFSchema, UiSchema } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import {
@@ -15,7 +16,6 @@ import {
 } from "@/modules/onboarding/components/rjsf-templates";
 import { Stepper } from "@/modules/onboarding/components/stepper";
 import {
-  type AnamnesisFormResponse,
   fetchAnamnesisForm,
   submitAnamnesis,
 } from "@/modules/onboarding/services/onboarding";
@@ -35,22 +35,27 @@ const widgets = {
 
 export function OnboardingPage() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<AnamnesisFormResponse | null>(null);
+  const { data: formData, isLoading: loading } = useQuery({
+    queryKey: ["anamnesis-form"],
+    queryFn: fetchAnamnesisForm,
+  });
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<
     Record<string, Record<string, string>>
   >({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchAnamnesisForm()
-      .then(setFormData)
-      .catch(() => {
-        toast.error("Failed to load onboarding form.");
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  const submitMutation = useMutation({
+    mutationFn: submitAnamnesis,
+    onSuccess: () => {
+      toast.success("Onboarding completed!");
+      navigate("/preparing", {
+        state: { fromOnboarding: true },
+        replace: true,
+      });
+    },
+    onError: () => {
+      toast.error("Failed to submit. Please try again.");
+    },
+  });
 
   const stepOrder = useMemo(
     () => formData?.uiSchema["ui:order"] ?? [],
@@ -124,33 +129,16 @@ export function OnboardingPage() {
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   }, []);
 
-  const handleSubmit = useCallback(async () => {
-    setIsSubmitting(true);
-    try {
-      // Flatten all answers and map q_ -> g_
-      const flatAnswers: Record<string, string> = {};
-      for (const sectionAnswers of Object.values(answers)) {
-        for (const [key, value] of Object.entries(sectionAnswers)) {
-          const mappedKey = key.replace(/^q_/, "g_");
-          flatAnswers[mappedKey] = value;
-        }
+  const handleSubmit = useCallback(() => {
+    const flatAnswers: Record<string, string> = {};
+    for (const sectionAnswers of Object.values(answers)) {
+      for (const [key, value] of Object.entries(sectionAnswers)) {
+        const mappedKey = key.replace(/^q_/, "g_");
+        flatAnswers[mappedKey] = value;
       }
-
-      await submitAnamnesis({
-        answers: flatAnswers,
-      });
-
-      toast.success("Onboarding completed!");
-      navigate("/preparing", {
-        state: { fromOnboarding: true },
-        replace: true,
-      });
-    } catch {
-      toast.error("Failed to submit. Please try again.");
-    } finally {
-      setIsSubmitting(false);
     }
-  }, [answers, navigate]);
+    submitMutation.mutate({ answers: flatAnswers });
+  }, [answers, submitMutation]);
 
   if (loading) {
     return (
@@ -197,9 +185,13 @@ export function OnboardingPage() {
                 Back
               </Button>
             )}
-            <Button type="submit" className="flex-1" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="flex-1"
+              disabled={submitMutation.isPending}
+            >
               {isLastStep
-                ? isSubmitting
+                ? submitMutation.isPending
                   ? "Submitting..."
                   : "Finish"
                 : "Next"}

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
   getWorkoutSummary,
@@ -13,23 +14,22 @@ interface WorkoutSummaryProps {
 
 export function WorkoutSummary({ onNextGroupResolved }: WorkoutSummaryProps) {
   const navigate = useNavigate();
-  const [data, setData] = useState<WorkoutSummaryResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading } = useQuery({
+    queryKey: ["workout-summary"],
+    queryFn: getWorkoutSummary,
+    placeholderData: {
+      lastWorkout: null,
+      nextWorkout: null,
+    } as WorkoutSummaryResponse,
+  });
 
   useEffect(() => {
-    getWorkoutSummary()
-      .then((res) => {
-        setData(res);
-        onNextGroupResolved?.(res.nextWorkout?.groupId ?? null);
-      })
-      .catch(() => {
-        setData({ lastWorkout: null, nextWorkout: null });
-        onNextGroupResolved?.(null);
-      })
-      .finally(() => setLoading(false));
-  }, [onNextGroupResolved]);
+    if (data) {
+      onNextGroupResolved?.(data.nextWorkout?.groupId ?? null);
+    }
+  }, [data, onNextGroupResolved]);
 
-  if (loading) return <WorkoutSummarySkeleton />;
+  if (isLoading) return <WorkoutSummarySkeleton />;
   if (!data) return null;
 
   return (

@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router";
+import { useMutation } from "@tanstack/react-query";
 import { generateWorkout } from "@/modules/preparing/services/preparing";
 import { Button } from "@/modules/shared/ui/button";
 
@@ -26,28 +27,21 @@ function DumbbellIcon({ className }: { className?: string }) {
 export function PreparingPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   const fromOnboarding = location.state?.fromOnboarding === true;
 
-  const callGenerate = useCallback(async () => {
-    setError(false);
-    setLoading(true);
-    try {
-      await generateWorkout();
-      navigate("/home", { replace: true });
-    } catch {
-      setError(true);
-      setLoading(false);
-    }
-  }, [navigate]);
+  const mutation = useMutation({
+    mutationFn: generateWorkout,
+    onSuccess: () => navigate("/home", { replace: true }),
+  });
 
+  const didRun = useRef(false);
   useEffect(() => {
-    if (fromOnboarding) {
-      callGenerate();
+    if (fromOnboarding && !didRun.current) {
+      didRun.current = true;
+      mutation.mutate();
     }
-  }, [fromOnboarding, callGenerate]);
+  }, []);
 
   if (!fromOnboarding) {
     return <Navigate to="/home" replace />;
@@ -56,19 +50,21 @@ export function PreparingPage() {
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 px-6">
       <DumbbellIcon
-        className={`size-16 text-primary ${loading ? "animate-spin" : ""}`}
+        className={`size-16 text-primary ${mutation.isPending ? "animate-spin" : ""}`}
       />
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-xl font-bold text-text">
           Preparing your workout...
         </h1>
         <p className="text-sm text-text-muted">
-          {error
+          {mutation.isError
             ? "Something went wrong"
             : "We're crafting the perfect plan for you"}
         </p>
       </div>
-      {error && <Button onClick={callGenerate}>Retry</Button>}
+      {mutation.isError && (
+        <Button onClick={() => mutation.mutate()}>Retry</Button>
+      )}
     </div>
   );
 }

@@ -1,27 +1,26 @@
 import { useState } from "react";
 import { AlertTriangle } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateBodyWeight } from "@/modules/home/services/dashboard.service";
 
 export function BodyWeightUpdate() {
+  const queryClient = useQueryClient();
   const [editing, setEditing] = useState(false);
   const [weight, setWeight] = useState("");
-  const [saving, setSaving] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  const mutation = useMutation({
+    mutationFn: (value: number) => updateBodyWeight(value),
+    onSuccess: () => {
+      setEditing(false);
+      queryClient.invalidateQueries({ queryKey: ["relative-strength"] });
+    },
+  });
+
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const value = parseFloat(weight);
     if (isNaN(value) || value <= 0) return;
-
-    setSaving(true);
-    try {
-      await updateBodyWeight(value);
-      setEditing(false);
-      window.location.reload();
-    } catch {
-      // silently fail, user can retry
-    } finally {
-      setSaving(false);
-    }
+    mutation.mutate(value);
   }
 
   if (!editing) {
@@ -50,10 +49,10 @@ export function BodyWeightUpdate() {
       />
       <button
         type="submit"
-        disabled={saving}
+        disabled={mutation.isPending}
         className="rounded bg-primary px-2 py-1 text-xs font-medium text-text-on-primary disabled:opacity-50"
       >
-        {saving ? "..." : "Save"}
+        {mutation.isPending ? "..." : "Save"}
       </button>
       <button
         type="button"

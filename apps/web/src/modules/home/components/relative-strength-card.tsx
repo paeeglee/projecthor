@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import {
   getRelativeStrength,
@@ -25,17 +25,12 @@ const TREND_CONFIG = {
 } as const;
 
 export function RelativeStrengthCard() {
-  const [data, setData] = useState<RelativeStrengthResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading } = useQuery({
+    queryKey: ["relative-strength"],
+    queryFn: getRelativeStrength,
+  });
 
-  useEffect(() => {
-    getRelativeStrength()
-      .then(setData)
-      .catch(() => setData(null))
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) return <RelativeStrengthSkeleton />;
+  if (isLoading) return <RelativeStrengthSkeleton />;
   if (!data) return null;
 
   const { icon: TrendIcon, color, sign } = TREND_CONFIG[data.trend];

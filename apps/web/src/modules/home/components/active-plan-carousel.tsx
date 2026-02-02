@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  getActivePlan,
-  type ActivePlanResponse,
-} from "@/modules/home/services/dashboard.service";
+import { useQuery } from "@tanstack/react-query";
+import { getActivePlan } from "@/modules/home/services/dashboard.service";
 import { ActivePlanCarouselSkeleton } from "./active-plan-carousel-skeleton";
 
 interface ActivePlanCarouselProps {
@@ -12,18 +10,12 @@ interface ActivePlanCarouselProps {
 export function ActivePlanCarousel({
   initialGroupId,
 }: ActivePlanCarouselProps) {
-  const [data, setData] = useState<ActivePlanResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["active-plan"],
+    queryFn: getActivePlan,
+  });
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    getActivePlan()
-      .then(setData)
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, []);
 
   useEffect(() => {
     if (!data || !initialGroupId) return;
@@ -43,8 +35,8 @@ export function ActivePlanCarousel({
     setActiveIndex(index);
   }, []);
 
-  if (loading) return <ActivePlanCarouselSkeleton />;
-  if (error || !data) {
+  if (isLoading) return <ActivePlanCarouselSkeleton />;
+  if (isError || !data) {
     return (
       <div className="rounded-xl bg-surface p-4">
         <p className="text-sm text-text-muted">No active plan</p>

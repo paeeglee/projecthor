@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   getMuscleGroupChart,
   type MuscleGroupChartResponse,
@@ -36,17 +36,12 @@ function MuscleGroupChartSkeleton() {
 }
 
 export function MuscleGroupChart() {
-  const [data, setData] = useState<MuscleGroupChartResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading } = useQuery({
+    queryKey: ["muscle-group-chart"],
+    queryFn: getMuscleGroupChart,
+  });
 
-  useEffect(() => {
-    getMuscleGroupChart()
-      .then(setData)
-      .catch(() => setData(null))
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) return <MuscleGroupChartSkeleton />;
+  if (isLoading) return <MuscleGroupChartSkeleton />;
   if (!data || data.muscleGroups.length === 0) return null;
 
   const { muscleGroups } = data;
