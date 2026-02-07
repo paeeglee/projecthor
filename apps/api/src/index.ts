@@ -94,6 +94,6 @@ new Elysia()
       getRelativeStrength: container.getRelativeStrengthUseCase,
     }),
   )
-  .listen(port, () => {
+  .listen({ port, hostname: "0.0.0.0" }, () => {
     console.log(`Server running on port ${port}`);
   });
