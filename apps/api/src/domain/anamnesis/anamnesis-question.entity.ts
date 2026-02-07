@@ -1,5 +1,6 @@
 export type FieldType =
   | "text"
+  | "textarea"
   | "boolean"
   | "single_choice"
   | "multi_choice"

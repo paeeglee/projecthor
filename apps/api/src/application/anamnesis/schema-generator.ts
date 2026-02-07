@@ -21,6 +21,8 @@ function questionToJsonSchema(
   switch (question.fieldType) {
     case "text":
       return { type: "string", title: question.label };
+    case "textarea":
+      return { type: "string", title: question.label };
     case "boolean":
       return { type: "boolean", title: question.label };
     case "single_choice":
@@ -71,11 +73,16 @@ export function generateSchemas(
     const groupProperties: Record<string, unknown> = {};
     const groupRequired: string[] = [];
     const groupUiOrder: string[] = [];
+    const groupUiSchema: Record<string, unknown> = {};
 
     for (const question of groupQuestions) {
       const questionKey = `q_${question.id}`;
       groupProperties[questionKey] = questionToJsonSchema(question);
       groupUiOrder.push(questionKey);
+
+      if (question.fieldType === "textarea") {
+        groupUiSchema[questionKey] = { "ui:widget": "textarea" };
+      }
 
       if (question.required) {
         groupRequired.push(questionKey);
@@ -90,7 +97,7 @@ export function generateSchemas(
     };
 
     uiOrder.push(groupKey);
-    uiSchema[groupKey] = { "ui:order": groupUiOrder };
+    uiSchema[groupKey] = { "ui:order": groupUiOrder, ...groupUiSchema };
   }
 
   return {

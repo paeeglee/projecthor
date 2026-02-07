@@ -13,6 +13,7 @@ import {
   FieldTemplate,
   ObjectFieldTemplate,
   SelectWidget,
+  TextareaWidget,
 } from "@/modules/onboarding/components/rjsf-templates";
 import { Stepper } from "@/modules/onboarding/components/stepper";
 import {
@@ -31,6 +32,7 @@ const templates = {
 
 const widgets = {
   SelectWidget,
+  textarea: TextareaWidget,
 };
 
 export function OnboardingPage() {

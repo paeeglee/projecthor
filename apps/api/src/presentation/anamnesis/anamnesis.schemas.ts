@@ -37,6 +37,7 @@ export const CreateQuestionBody = Type.Object({
   label: Type.String({ minLength: 1 }),
   fieldType: Type.Union([
     Type.Literal("text"),
+    Type.Literal("textarea"),
     Type.Literal("boolean"),
     Type.Literal("single_choice"),
     Type.Literal("multi_choice"),
@@ -53,6 +54,7 @@ export const UpdateQuestionBody = Type.Object(
     fieldType: Type.Optional(
       Type.Union([
         Type.Literal("text"),
+        Type.Literal("textarea"),
         Type.Literal("boolean"),
         Type.Literal("single_choice"),
         Type.Literal("multi_choice"),
