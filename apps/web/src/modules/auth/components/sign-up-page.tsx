@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
@@ -19,6 +20,7 @@ export function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -61,6 +63,12 @@ export function SignUpPage() {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       setUser({ ...user, hasAnamnesis: false, fullName: data.fullName });
+      queryClient.setQueryData(["profile"], {
+        id: "",
+        userId: user.id,
+        fullName: data.fullName,
+        bodyWeight: null,
+      });
       navigate("/onboarding");
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data?.error) {

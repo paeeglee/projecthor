@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
@@ -20,6 +21,7 @@ export function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -63,6 +65,7 @@ export function SignInPage() {
 
       const profile = await getProfile();
       setUser({ ...user, fullName: profile.fullName });
+      queryClient.setQueryData(["profile"], profile);
 
       navigate(user.hasAnamnesis ? "/home" : "/onboarding");
     } catch (error) {
