@@ -3,6 +3,7 @@ import { api } from "@/modules/shared/services/api";
 interface GroupExercise {
   id: string;
   exerciseName: string;
+  images: string[];
   sets: number;
   reps: number;
   restSeconds: number | null;

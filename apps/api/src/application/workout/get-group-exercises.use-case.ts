@@ -9,6 +9,7 @@ interface GroupExerciseResponse {
   exercises: Array<{
     id: string;
     exerciseName: string;
+    images: string[];
     sets: number;
     reps: number;
     restSeconds: number | null;
@@ -65,6 +66,7 @@ export class GetGroupExercisesUseCase {
       exercises: exercises.map((e) => ({
         id: e.id,
         exerciseName: catalogMap.get(e.exerciseId)?.name ?? "Unknown exercise",
+        images: catalogMap.get(e.exerciseId)?.images ?? [],
         sets: e.sets,
         reps: e.reps,
         restSeconds: e.restSeconds,

@@ -275,6 +275,7 @@ export function WorkoutSessionPage() {
             key={exercise.id}
             exerciseId={exercise.id}
             exerciseName={exercise.exerciseName}
+            images={exercise.images}
             sets={setsMap[exercise.id] ?? []}
             onSetChange={handleSetChange}
             onSetComplete={restTimer.visible ? undefined : handleSetComplete}

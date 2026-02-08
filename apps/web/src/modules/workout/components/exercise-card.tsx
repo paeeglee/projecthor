@@ -9,6 +9,7 @@ export interface SetRow {
 interface ExerciseCardProps {
   exerciseId: string;
   exerciseName: string;
+  images?: string[];
   sets: SetRow[];
   onSetChange: (
     exerciseId: string,
@@ -22,6 +23,7 @@ interface ExerciseCardProps {
 export function ExerciseCard({
   exerciseId,
   exerciseName,
+  images,
   sets,
   onSetChange,
   onSetComplete,
@@ -42,7 +44,15 @@ export function ExerciseCard({
   return (
     <div className="rounded-xl bg-surface p-4">
       <div className="flex items-center gap-3">
-        <div className="size-14 shrink-0 rounded-lg bg-surface-light" />
+        {images?.[0] ? (
+          <img
+            src={`${import.meta.env.VITE_IMAGE_URL}${images[0]}`}
+            alt={exerciseName}
+            className="size-14 shrink-0 rounded-lg object-cover"
+          />
+        ) : (
+          <div className="size-14 shrink-0 rounded-lg bg-surface-light" />
+        )}
         <div className="flex-1">
           <h3 className="text-sm font-semibold text-white">{exerciseName}</h3>
           <div className="mt-1.5 h-1.5 w-full rounded-full bg-surface-light">
