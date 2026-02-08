@@ -16,7 +16,7 @@ const port = Number(env.PORT);
 const authMiddleware = authMiddlewarePlugin(container.authMiddlewareRepository);
 
 new Elysia()
-  .use(cors({ origin: "http://localhost:5173" }))
+  .use(cors({ origin: ["http://localhost:5173", "https://web-production-4f9f8.up.railway.app"] }))
   .use(healthPlugin(container.getHealthStatusUseCase))
   .use(
     authPlugin({
