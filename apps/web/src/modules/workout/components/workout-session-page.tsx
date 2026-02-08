@@ -1,12 +1,12 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams, useBlocker } from "react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useBlocker, useNavigate, useParams } from "react-router";
 import { Button } from "@/modules/shared/ui/button";
-import {
-  getGroupExercises,
-  finishWorkoutSession,
-} from "@/modules/workout/services/workout.service";
 import { CircularProgress } from "@/modules/shared/ui/circular-progress";
+import {
+  finishWorkoutSession,
+  getGroupExercises,
+} from "@/modules/workout/services/workout.service";
 import { ExerciseCard, type SetRow } from "./exercise-card";
 import { RestTimer } from "./rest-timer";
 
@@ -221,7 +221,7 @@ export function WorkoutSessionPage() {
   if (loading) {
     return (
       <div className="flex min-h-svh items-center justify-center">
-        <p className="text-sm text-text-muted">Loading...</p>
+        <p className="text-sm text-text-muted">Carregando...</p>
       </div>
     );
   }
@@ -229,7 +229,7 @@ export function WorkoutSessionPage() {
   if (error || !data) {
     return (
       <div className="flex min-h-svh items-center justify-center">
-        <p className="text-sm text-text-muted">Failed to load workout</p>
+        <p className="text-sm text-text-muted">Falha ao carregar treino</p>
       </div>
     );
   }
@@ -289,16 +289,16 @@ export function WorkoutSessionPage() {
           disabled={!hasCompletedSets || finishMutation.isPending}
           onClick={() => finishMutation.mutate()}
         >
-          {finishMutation.isPending ? "Finishing..." : "Finish Workout"}
+          {finishMutation.isPending ? "Finalizando..." : "Finalizar Treino"}
         </Button>
       </div>
 
       {blocker.state === "blocked" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
           <div className="mx-4 flex w-full max-w-sm flex-col gap-4 rounded-lg bg-surface p-6">
-            <h2 className="text-lg font-bold text-white">Leave workout?</h2>
+            <h2 className="text-lg font-bold text-white">Sair do treino?</h2>
             <p className="text-sm text-text-muted">
-              Your timer will keep running. You can return to continue.
+              Seu timer continuará rodando. Você pode voltar para continuar.
             </p>
             <div className="flex gap-3">
               <Button
@@ -306,14 +306,14 @@ export function WorkoutSessionPage() {
                 variant="ghost"
                 onClick={() => blocker.reset?.()}
               >
-                Stay
+                Ficar
               </Button>
               <Button
                 className="flex-1"
                 variant="destructive"
                 onClick={() => blocker.proceed?.()}
               >
-                Leave
+                Sair
               </Button>
             </div>
           </div>
@@ -324,15 +324,15 @@ export function WorkoutSessionPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
           <div className="mx-4 flex w-full max-w-sm flex-col gap-4 rounded-lg bg-surface p-6">
             <h2 className="text-lg font-bold text-white">
-              Workout in progress
+              Treino em andamento
             </h2>
             <p className="text-sm text-text-muted">
-              Your timer is at{" "}
+              Seu timer está em{" "}
               <span className="font-mono text-white">
                 {formatTime(elapsed)}
               </span>
-              . That's over 45 minutes. Do you want to reset the timer or
-              continue where you left off?
+              . Já se passaram mais de 45 minutos. Deseja reiniciar o timer ou
+              continuar de onde parou?
             </p>
             <div className="flex gap-3">
               <Button
@@ -340,10 +340,10 @@ export function WorkoutSessionPage() {
                 variant="ghost"
                 onClick={handleTimerReset}
               >
-                Reset
+                Reiniciar
               </Button>
               <Button className="flex-1" onClick={handleTimerContinue}>
-                Continue
+                Continuar
               </Button>
             </div>
           </div>

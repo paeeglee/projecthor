@@ -1,5 +1,5 @@
-import type { IAiClientRepository } from "../../domain/ai/ai-client.repository";
 import type { GeneratedWorkout } from "../../domain/ai/ai.types";
+import type { IAiClientRepository } from "../../domain/ai/ai-client.repository";
 import type { IAnamnesisQuestionRepository } from "../../domain/anamnesis/anamnesis-question.repository";
 import type { AnamnesisResponse } from "../../domain/anamnesis/anamnesis-response.entity";
 import type { IAnamnesisResponseRepository } from "../../domain/anamnesis/anamnesis-response.repository";

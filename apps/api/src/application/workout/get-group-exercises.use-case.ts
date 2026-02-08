@@ -40,7 +40,7 @@ export class GetGroupExercisesUseCase {
     const catalog = await this.catalogRepository.findByIds(exerciseIds);
     const catalogMap = new Map(catalog.map((e) => [e.id, e]));
 
-    let lastSessionLogs = new Map<
+    const lastSessionLogs = new Map<
       string,
       Array<{ reps: number; weight: number }>
     >();

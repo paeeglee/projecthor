@@ -1,5 +1,5 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -72,7 +72,7 @@ export function SignInPage() {
       if (axios.isAxiosError(error) && error.response?.data?.error) {
         toast.error(error.response.data.error);
       } else {
-        toast.error("Something went wrong. Please try again.");
+        toast.error("Algo deu errado. Tente novamente.");
       }
     } finally {
       setIsSubmitting(false);
@@ -82,11 +82,11 @@ export function SignInPage() {
   return (
     <div className="flex min-h-svh flex-col justify-center">
       <div className="mx-auto w-full max-w-md rounded-2xl bg-background/80 p-8 backdrop-blur-md">
-        <h1 className="mb-8 text-2xl font-bold">Sign in</h1>
+        <h1 className="mb-8 text-2xl font-bold">Entrar</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">E-mail</Label>
             <Input
               id="email"
               type="email"
@@ -101,12 +101,12 @@ export function SignInPage() {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Senha</Label>
             <div className="relative">
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                placeholder="Your password"
+                placeholder="Sua senha"
                 className="pr-11"
                 {...register("password")}
               />
@@ -114,7 +114,7 @@ export function SignInPage() {
                 type="button"
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text transition-colors"
                 onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
               >
                 {showPassword ? (
                   <EyeOff className="size-5" />
@@ -131,14 +131,14 @@ export function SignInPage() {
           </div>
 
           <Button type="submit" className="mt-2 w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Signing in..." : "Sign in"}
+            {isSubmitting ? "Entrando..." : "Entrar"}
           </Button>
         </form>
 
         <p className="mt-6 text-center text-sm text-text-muted">
-          Don't have an account?{" "}
+          Não tem uma conta?{" "}
           <Link to="/signup" className="text-primary hover:underline">
-            Sign up
+            Criar conta
           </Link>
         </p>
       </div>

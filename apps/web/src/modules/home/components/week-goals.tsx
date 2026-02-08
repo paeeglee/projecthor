@@ -6,7 +6,7 @@ import {
 } from "@/modules/home/services/dashboard.service";
 import { WeekGoalsSkeleton } from "./week-goals-skeleton";
 
-const DAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"];
+const DAY_LABELS = ["D", "S", "T", "Q", "Q", "S", "S"];
 
 export function WeekGoals() {
   const { data, isLoading } = useQuery({
@@ -28,7 +28,7 @@ export function WeekGoals() {
     <div className="rounded-xl bg-surface p-4">
       <div className="mb-4 flex items-center justify-between">
         <span className="text-xs font-semibold tracking-wider text-text-muted uppercase">
-          Week Goal
+          Meta da Semana
         </span>
         <span className="text-xs font-semibold text-text-muted">
           {completedCount}/{data.totalGoal}

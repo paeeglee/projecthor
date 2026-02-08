@@ -52,7 +52,7 @@ export function ExerciseCard({
             />
           </div>
           <span className="mt-1 text-xs text-text-muted">
-            {completedCount}/{totalSets} sets
+            {completedCount}/{totalSets} séries
           </span>
         </div>
       </div>
@@ -61,7 +61,7 @@ export function ExerciseCard({
         <div className="grid grid-cols-[1.5rem_1fr_1fr_2.5rem] gap-2 text-xs font-semibold uppercase tracking-wider text-text-muted">
           <span>#</span>
           <span>Reps</span>
-          <span>Weight</span>
+          <span>Carga</span>
           <span />
         </div>
         {sets.map((set, i) => (

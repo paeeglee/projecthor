@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { getProfile } from "@/modules/auth/services/profile";
 import { useUserStore } from "@/modules/auth/stores/user-store";

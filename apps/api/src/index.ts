@@ -7,16 +7,23 @@ import { anamnesisPlugin } from "./presentation/anamnesis/anamnesis.plugin";
 import { authPlugin } from "./presentation/auth/auth.plugin";
 import { authMiddlewarePlugin } from "./presentation/auth/auth-middleware.plugin";
 import { dashboardPlugin } from "./presentation/dashboard/dashboard.plugin";
-import { profilePlugin } from "./presentation/profile/profile.plugin";
 import { exercisePlugin } from "./presentation/exercise/exercise.plugin";
 import { healthPlugin } from "./presentation/health/health.plugin";
+import { profilePlugin } from "./presentation/profile/profile.plugin";
 import { workoutPlugin } from "./presentation/workout/workout.plugin";
 
 const port = Number(env.PORT);
 const authMiddleware = authMiddlewarePlugin(container.authMiddlewareRepository);
 
 new Elysia()
-  .use(cors({ origin: ["http://localhost:5173", "https://web-production-4f9f8.up.railway.app"] }))
+  .use(
+    cors({
+      origin: [
+        "http://localhost:5173",
+        "https://web-production-4f9f8.up.railway.app",
+      ],
+    }),
+  )
   .use(healthPlugin(container.getHealthStatusUseCase))
   .use(
     authPlugin({

@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
 import { BatteryCharging } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/modules/shared/ui/button";
 
 interface RestTimerProps {
@@ -59,7 +59,7 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
         </button>
       </div>
       <Button size="sm" onClick={onDismiss}>
-        Skip
+        Pular
       </Button>
     </div>
   );

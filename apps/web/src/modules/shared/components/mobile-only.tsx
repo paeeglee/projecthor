@@ -48,9 +48,9 @@ export function MobileOnly({ children }: { children: ReactNode }) {
             <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
             <line x1="12" y1="18" x2="12.01" y2="18" />
           </svg>
-          <h1 className="text-2xl font-bold">Unsupported device</h1>
+          <h1 className="text-2xl font-bold">Dispositivo não suportado</h1>
           <p className="mt-2 text-gray-500">
-            This app is only available on mobile devices.
+            Este app está disponível apenas em dispositivos móveis.
           </p>
         </div>
       </div>

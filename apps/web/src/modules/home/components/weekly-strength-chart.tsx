@@ -31,7 +31,7 @@ export function WeeklyStrengthChart({ history }: Props) {
   const formatWeek = (dateStr: string) => {
     const d = new Date(dateStr);
     const day = d.getDate();
-    const month = d.toLocaleString("en", { month: "short" });
+    const month = d.toLocaleString("pt-BR", { month: "short" });
     return `${day} ${month}`;
   };
 
@@ -44,31 +44,33 @@ export function WeeklyStrengthChart({ history }: Props) {
     <div className="rounded-xl bg-surface p-4">
       <div className="flex items-center justify-between">
         <span className="text-xs font-semibold tracking-wider text-text-muted uppercase">
-          Weekly Evolution
+          Evolução Semanal
         </span>
-        <HelpDrawer title="Weekly Evolution">
+        <HelpDrawer title="Evolução Semanal">
           <p>
-            This chart shows your{" "}
-            <strong className="text-text">IGFR evolution week by week</strong>.
-            Each point represents your average relative strength for that week,
-            combining all movement patterns.
+            Este gráfico mostra sua{" "}
+            <strong className="text-text">
+              evolução do IGFR semana a semana
+            </strong>
+            . Cada ponto representa sua força relativa média daquela semana,
+            combinando todos os padrões de movimento.
           </p>
           <p className="mt-3">
-            <strong className="text-text">Line going up:</strong> you're getting
-            stronger relative to your body weight. This could mean you're
-            increasing load, doing more reps, or losing fat while maintaining
-            strength.
+            <strong className="text-text">Linha subindo:</strong> você está
+            ficando mais forte em relação ao seu peso corporal. Isso pode
+            significar que está aumentando carga, fazendo mais reps, ou perdendo
+            gordura mantendo a força.
           </p>
           <p className="mt-3">
-            <strong className="text-text">Line going down:</strong> may indicate
-            accumulated fatigue, a needed deload, or a change in training
-            routine. Occasional dips are normal — what matters is the overall
-            trend.
+            <strong className="text-text">Linha descendo:</strong> pode indicar
+            fadiga acumulada, necessidade de deload, ou mudança na rotina de
+            treino. Quedas ocasionais são normais — o que importa é a tendência
+            geral.
           </p>
           <p className="mt-3">
-            <strong className="text-text">Example:</strong> if the line goes
-            from 7.2 to 7.8 over 4 weeks, it means on average you're moving ~8%
-            more relative load per exercise. Consistent progress.
+            <strong className="text-text">Exemplo:</strong> se a linha vai de
+            7.2 a 7.8 em 4 semanas, significa que em média você está movendo ~8%
+            mais carga relativa por exercício. Progresso consistente.
           </p>
         </HelpDrawer>
       </div>

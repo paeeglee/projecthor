@@ -1,6 +1,7 @@
 import { Elysia } from "elysia";
 import type { GenerateWorkoutUseCase } from "../../application/ai/generate-workout.use-case";
 import type { authMiddlewarePlugin } from "../auth/auth-middleware.plugin";
+
 interface AiPluginDeps {
   authMiddleware: ReturnType<typeof authMiddlewarePlugin>;
   generateWorkout: GenerateWorkoutUseCase;

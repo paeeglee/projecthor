@@ -9,9 +9,9 @@ import { WorkoutSummary } from "./workout-summary";
 
 function getGreeting(): string {
   const hour = new Date().getHours();
-  if (hour >= 5 && hour < 12) return "\u{1F31E} Morning";
-  if (hour >= 12 && hour < 18) return "\u2600\uFE0F Afternoon";
-  return "\u{1F319} Evening";
+  if (hour >= 5 && hour < 12) return "\u{1F31E} Bom dia";
+  if (hour >= 12 && hour < 18) return "\u2600\uFE0F Boa tarde";
+  return "\u{1F319} Boa noite";
 }
 
 export function HomePage() {
@@ -37,7 +37,7 @@ export function HomePage() {
       <RelativeStrengthCard />
       <ActivePlanCarousel initialGroupId={nextGroupId} />
       <Button variant="outline" onClick={handleSignOut}>
-        Sign out
+        Sair
       </Button>
     </div>
   );

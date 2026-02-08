@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { AlertTriangle } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AlertTriangle } from "lucide-react";
+import { useState } from "react";
 import { updateBodyWeight } from "@/modules/home/services/dashboard.service";
 
 export function BodyWeightUpdate() {
@@ -30,7 +30,7 @@ export function BodyWeightUpdate() {
         className="mt-2 flex items-center gap-1.5 text-xs text-amber-400"
       >
         <AlertTriangle className="size-3" />
-        Outdated body weight — tap to update
+        Peso desatualizado — toque para atualizar
       </button>
     );
   }
@@ -43,7 +43,7 @@ export function BodyWeightUpdate() {
         min="0"
         value={weight}
         onChange={(e) => setWeight(e.target.value)}
-        placeholder="Weight (kg)"
+        placeholder="Peso (kg)"
         className="w-24 rounded bg-surface-light px-2 py-1 text-xs text-text"
         autoFocus
       />
@@ -52,14 +52,14 @@ export function BodyWeightUpdate() {
         disabled={mutation.isPending}
         className="rounded bg-primary px-2 py-1 text-xs font-medium text-text-on-primary disabled:opacity-50"
       >
-        {mutation.isPending ? "..." : "Save"}
+        {mutation.isPending ? "..." : "Salvar"}
       </button>
       <button
         type="button"
         onClick={() => setEditing(false)}
         className="text-xs text-text-muted"
       >
-        Cancel
+        Cancelar
       </button>
     </form>
   );

@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { HelpCircle } from "lucide-react";
+import { useState } from "react";
 import { Drawer } from "vaul";
 
 interface HelpDrawerProps {
@@ -29,7 +29,7 @@ export function HelpDrawer({ title, children }: HelpDrawerProps) {
           </div>
           <Drawer.Close asChild>
             <button className="mt-5 w-full rounded-lg bg-surface-light py-2.5 text-sm font-medium text-text">
-              Got it
+              Entendi
             </button>
           </Drawer.Close>
         </Drawer.Content>

@@ -1,6 +1,6 @@
 import type { IAuthRepository } from "../../domain/auth/auth.repository";
-import type { IProfileRepository } from "../../domain/profile/profile.repository";
 import type { SignUpResult } from "../../domain/auth/auth.types";
+import type { IProfileRepository } from "../../domain/profile/profile.repository";
 
 export class SignUpUseCase {
   constructor(

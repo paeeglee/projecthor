@@ -1,12 +1,12 @@
-import type { IProfileRepository } from "../../domain/profile/profile.repository";
-import type {
-  IRelativeStrengthRepository,
-  WorkoutLogWithExercise,
-} from "../../domain/dashboard/relative-strength.repository";
 import {
   classifyMovementPattern,
   type MovementPattern,
 } from "../../domain/dashboard/movement-pattern";
+import type {
+  IRelativeStrengthRepository,
+  WorkoutLogWithExercise,
+} from "../../domain/dashboard/relative-strength.repository";
+import type { IProfileRepository } from "../../domain/profile/profile.repository";
 
 interface PatternBreakdown {
   pattern: MovementPattern;

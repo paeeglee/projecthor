@@ -61,7 +61,7 @@ export function MuscleGroupChart() {
   return (
     <div className="rounded-xl bg-surface p-4">
       <span className="text-xs font-semibold tracking-wider text-text-muted uppercase">
-        Muscle Groups — Last 7 days
+        Grupos Musculares — Últimos 7 dias
       </span>
       <div className="mt-2 flex items-center justify-center">
         <svg
@@ -69,7 +69,7 @@ export function MuscleGroupChart() {
           width="100%"
           style={{ maxWidth: CHART_SIZE }}
           role="img"
-          aria-label="Muscle group average weight polar chart"
+          aria-label="Gráfico polar de peso médio por grupo muscular"
         >
           {Array.from({ length: RINGS }).map((_, i) => {
             const ringRadius = ((i + 1) / RINGS) * MAX_RADIUS;

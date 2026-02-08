@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { Minus, TrendingDown, TrendingUp } from "lucide-react";
 import {
   getRelativeStrength,
   type RelativeStrengthResponse,
 } from "@/modules/home/services/dashboard.service";
 import { HelpDrawer } from "@/modules/shared/ui/help-drawer";
+import { BodyWeightUpdate } from "./body-weight-update";
 import { PatternBreakdown } from "./pattern-breakdown";
 import { WeeklyStrengthChart } from "./weekly-strength-chart";
-import { BodyWeightUpdate } from "./body-weight-update";
 
 function RelativeStrengthSkeleton() {
   return (
@@ -40,32 +40,33 @@ export function RelativeStrengthCard() {
       <div className="rounded-xl bg-surface p-4">
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold tracking-wider text-text-muted uppercase">
-            Relative Strength
+            Força Relativa
           </span>
-          <HelpDrawer title="Relative Strength Score">
+          <HelpDrawer title="Índice de Força Relativa">
             <p>
-              The <strong className="text-text">Relative Strength score</strong>{" "}
-              measures your strength normalized by body weight. It combines all
-              your exercises into a single number you can track over time.
+              O <strong className="text-text">índice de Força Relativa</strong>{" "}
+              mede sua força normalizada pelo peso corporal. Ele combina todos
+              os seus exercícios em um único número que você pode acompanhar ao
+              longo do tempo.
             </p>
             <p className="mt-3">
-              <strong className="text-text">How it works:</strong> for each
-              exercise, we calculate{" "}
-              <span className="text-text">(weight × reps) ÷ body weight</span>.
-              Then we group by movement pattern (Squat, Hinge, Push, Pull, Core)
-              and average them.
+              <strong className="text-text">Como funciona:</strong> para cada
+              exercício, calculamos{" "}
+              <span className="text-text">(carga × reps) ÷ peso corporal</span>.
+              Depois agrupamos por padrão de movimento (Squat, Hinge, Push,
+              Pull, Core) e tiramos a média.
             </p>
             <p className="mt-3">
-              <strong className="text-text">The number (e.g. 104):</strong>{" "}
-              represents your current strength compared to your best phase (best
-              4 consecutive weeks). 100 = your baseline. Above 100 = new peak.
-              Below 90 = possible fatigue.
+              <strong className="text-text">O número (ex: 104):</strong>{" "}
+              representa sua força atual comparada à sua melhor fase (melhores 4
+              semanas consecutivas). 100 = sua linha de base. Acima de 100 =
+              novo pico. Abaixo de 90 = possível fadiga.
             </p>
             <p className="mt-3">
-              <strong className="text-text">Example:</strong> if you bench press
-              80kg × 8 reps and weigh 80kg, your Push FR is (80 × 8) ÷ 80 = 8.0.
-              Next week at 85kg × 8, it rises to 8.5 — the score reflects that
-              progression.
+              <strong className="text-text">Exemplo:</strong> se você faz supino
+              com 80kg × 8 reps e pesa 80kg, seu Push FR é (80 × 8) ÷ 80 = 8.0.
+              Na semana seguinte com 85kg × 8, sobe para 8.5 — o índice reflete
+              essa progressão.
             </p>
           </HelpDrawer>
         </div>
@@ -81,7 +82,7 @@ export function RelativeStrengthCard() {
         </div>
         <p className="mt-1 text-xs text-text-muted">
           {sign}
-          {data.trendDelta}% vs best 4 weeks
+          {data.trendDelta}% vs melhores 4 semanas
         </p>
         {data.bodyWeightStale && <BodyWeightUpdate />}
       </div>

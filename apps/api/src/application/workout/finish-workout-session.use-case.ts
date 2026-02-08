@@ -1,6 +1,6 @@
+import type { IWorkoutLogRepository } from "../../domain/workout/workout-log.repository";
 import type { WorkoutSession } from "../../domain/workout/workout-session.entity";
 import type { IWorkoutSessionRepository } from "../../domain/workout/workout-session.repository";
-import type { IWorkoutLogRepository } from "../../domain/workout/workout-log.repository";
 
 export class FinishWorkoutSessionUseCase {
   constructor(

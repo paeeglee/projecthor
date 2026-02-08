@@ -1,6 +1,6 @@
+import { useMutation } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router";
-import { useMutation } from "@tanstack/react-query";
 import { generateWorkout } from "@/modules/preparing/services/preparing";
 import { Button } from "@/modules/shared/ui/button";
 
@@ -54,16 +54,16 @@ export function PreparingPage() {
       />
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-xl font-bold text-text">
-          Preparing your workout...
+          Preparando seu treino...
         </h1>
         <p className="text-sm text-text-muted">
           {mutation.isError
-            ? "Something went wrong"
-            : "We're crafting the perfect plan for you"}
+            ? "Algo deu errado"
+            : "Estamos montando o plano ideal para você"}
         </p>
       </div>
       {mutation.isError && (
-        <Button onClick={() => mutation.mutate()}>Retry</Button>
+        <Button onClick={() => mutation.mutate()}>Tentar novamente</Button>
       )}
     </div>
   );

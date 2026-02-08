@@ -23,46 +23,46 @@ export function PatternBreakdown({ breakdown }: Props) {
     <div className="rounded-xl bg-surface p-4">
       <div className="flex items-center justify-between">
         <span className="text-xs font-semibold tracking-wider text-text-muted uppercase">
-          By Movement Pattern
+          Por Padrão de Movimento
         </span>
-        <HelpDrawer title="Movement Patterns">
+        <HelpDrawer title="Padrões de Movimento">
           <p>
-            Your exercises are automatically classified into{" "}
-            <strong className="text-text">5 movement patterns</strong> based on
-            the muscles worked:
+            Seus exercícios são automaticamente classificados em{" "}
+            <strong className="text-text">5 padrões de movimento</strong> com
+            base nos músculos trabalhados:
           </p>
           <ul className="mt-2 list-inside list-disc space-y-1">
             <li>
-              <strong className="text-text">Squat</strong> — squats, leg press,
-              hack squat
+              <strong className="text-text">Squat</strong> — agachamento, leg
+              press, hack squat
             </li>
             <li>
-              <strong className="text-text">Hinge</strong> — deadlift, hip
-              thrust, RDL
+              <strong className="text-text">Hinge</strong> — levantamento terra,
+              hip thrust, RDL
             </li>
             <li>
-              <strong className="text-text">Push</strong> — bench press,
-              shoulder press, triceps
+              <strong className="text-text">Push</strong> — supino,
+              desenvolvimento, tríceps
             </li>
             <li>
-              <strong className="text-text">Pull</strong> — pull-ups, rows,
-              biceps
+              <strong className="text-text">Pull</strong> — barra fixa, remadas,
+              bíceps
             </li>
             <li>
-              <strong className="text-text">Core</strong> — crunches, planks,
+              <strong className="text-text">Core</strong> — abdominais, prancha,
               carries
             </li>
           </ul>
           <p className="mt-3">
-            <strong className="text-text">The bars</strong> show your average
-            Relative Strength for each pattern over the last 14 days. The
-            highest value fills the full bar and the rest are proportional.
+            <strong className="text-text">As barras</strong> mostram sua Força
+            Relativa média para cada padrão nos últimos 14 dias. O maior valor
+            preenche a barra inteira e o restante é proporcional.
           </p>
           <p className="mt-3">
-            <strong className="text-text">How to use it:</strong> if one pattern
-            is much lower than the others, it may indicate a muscular imbalance.
-            For example, if Pull is at 6.0 and Push at 10.0, consider giving
-            more attention to pulling exercises.
+            <strong className="text-text">Como usar:</strong> se um padrão está
+            muito abaixo dos outros, pode indicar um desequilíbrio muscular. Por
+            exemplo, se Pull está em 6.0 e Push em 10.0, considere dar mais
+            atenção aos exercícios de puxar.
           </p>
         </HelpDrawer>
       </div>

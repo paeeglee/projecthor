@@ -48,14 +48,14 @@ export function OnboardingPage() {
   const submitMutation = useMutation({
     mutationFn: submitAnamnesis,
     onSuccess: () => {
-      toast.success("Onboarding completed!");
+      toast.success("Configuração concluída!");
       navigate("/preparing", {
         state: { fromOnboarding: true },
         replace: true,
       });
     },
     onError: () => {
-      toast.error("Failed to submit. Please try again.");
+      toast.error("Falha ao enviar. Tente novamente.");
     },
   });
 
@@ -145,7 +145,7 @@ export function OnboardingPage() {
   if (loading) {
     return (
       <div className="flex min-h-svh items-center justify-center">
-        <p className="text-text-muted">Loading...</p>
+        <p className="text-text-muted">Carregando...</p>
       </div>
     );
   }
@@ -153,7 +153,7 @@ export function OnboardingPage() {
   if (!formData || !currentSchema) {
     return (
       <div className="flex min-h-svh items-center justify-center">
-        <p className="text-text-muted">Something went wrong.</p>
+        <p className="text-text-muted">Algo deu errado.</p>
       </div>
     );
   }
@@ -184,7 +184,7 @@ export function OnboardingPage() {
                 className="flex-1"
                 onClick={handleBack}
               >
-                Back
+                Voltar
               </Button>
             )}
             <Button
@@ -194,9 +194,9 @@ export function OnboardingPage() {
             >
               {isLastStep
                 ? submitMutation.isPending
-                  ? "Submitting..."
-                  : "Finish"
-                : "Next"}
+                  ? "Enviando..."
+                  : "Concluir"
+                : "Próximo"}
             </Button>
           </div>
         </Form>

@@ -37,7 +37,7 @@ export function WorkoutSummary({ onNextGroupResolved }: WorkoutSummaryProps) {
       <div className="flex gap-4">
         <div className="flex-1">
           <span className="text-xs font-semibold tracking-wider text-text-muted uppercase">
-            Last Workout
+            Último Treino
           </span>
           {data.lastWorkout ? (
             <>
@@ -49,12 +49,12 @@ export function WorkoutSummary({ onNextGroupResolved }: WorkoutSummaryProps) {
               </p>
             </>
           ) : (
-            <p className="mt-1 text-base font-semibold text-text-muted">N/A</p>
+            <p className="mt-1 text-base font-semibold text-text-muted">N/D</p>
           )}
         </div>
         <div className="flex-1">
           <span className="text-xs font-semibold tracking-wider text-text-muted uppercase">
-            Next Workout
+            Próximo Treino
           </span>
           {data.nextWorkout ? (
             <p className="mt-1 text-base font-semibold text-white">
@@ -62,7 +62,7 @@ export function WorkoutSummary({ onNextGroupResolved }: WorkoutSummaryProps) {
             </p>
           ) : (
             <p className="mt-1 text-base font-semibold text-text-muted">
-              No active plan
+              Sem plano ativo
             </p>
           )}
         </div>
@@ -77,7 +77,7 @@ export function WorkoutSummary({ onNextGroupResolved }: WorkoutSummaryProps) {
           }
         }}
       >
-        Start Workout
+        Iniciar Treino
       </Button>
     </div>
   );
@@ -89,7 +89,7 @@ function formatRelativeDate(isoDate: string): string {
   const diffMs = now.getTime() - date.getTime();
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
-  return `${diffDays} days ago`;
+  if (diffDays === 0) return "Hoje";
+  if (diffDays === 1) return "Ontem";
+  return `${diffDays} dias atrás`;
 }

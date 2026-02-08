@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getActivePlan } from "@/modules/home/services/dashboard.service";
 import { ActivePlanCarouselSkeleton } from "./active-plan-carousel-skeleton";
 
@@ -39,7 +39,7 @@ export function ActivePlanCarousel({
   if (isError || !data) {
     return (
       <div className="rounded-xl bg-surface p-4">
-        <p className="text-sm text-text-muted">No active plan</p>
+        <p className="text-sm text-text-muted">Sem plano ativo</p>
       </div>
     );
   }
