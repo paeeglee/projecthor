@@ -4,9 +4,11 @@ import type { IAiClientRepository } from "../../domain/ai/ai-client.repository";
 
 export class GeminiClientRepository implements IAiClientRepository {
   private readonly client: GoogleGenAI;
+  private readonly model: string;
 
-  constructor(apiKey: string) {
+  constructor(apiKey: string, model: string) {
     this.client = new GoogleGenAI({ apiKey });
+    this.model = model;
   }
 
   async chat(request: ChatRequest): Promise<ChatResponse> {
@@ -14,7 +16,7 @@ export class GeminiClientRepository implements IAiClientRepository {
     const userMessage = request.messages.find((m) => m.role === "user");
 
     const response = await this.client.models.generateContent({
-      model: request.model,
+      model: this.model,
       contents: userMessage?.content ?? "",
       config: {
         systemInstruction: systemMessage?.content,

@@ -230,13 +230,24 @@ const getRelativeStrengthUseCase = new GetRelativeStrengthUseCase(
 
 function createAiClient(): IAiClientRepository {
   const aiClient = env.AI_CLIENT ?? "mock";
+  const model = env.AI_MODEL;
+
   switch (aiClient) {
     case "openai":
-      return new OpenAiClientRepository(env.OPENAI_API_KEY as string);
+      return new OpenAiClientRepository(
+        env.OPENAI_API_KEY as string,
+        model ?? "gpt-4o",
+      );
     case "gemini":
-      return new GeminiClientRepository(env.GEMINI_API_KEY as string);
+      return new GeminiClientRepository(
+        env.GEMINI_API_KEY as string,
+        model ?? "gemini-2.0-flash",
+      );
     case "grok":
-      return new XaiClientRepository(env.XAI_API_KEY as string);
+      return new XaiClientRepository(
+        env.XAI_API_KEY as string,
+        model ?? "grok-3",
+      );
     case "mock":
       return new MockAiClientRepository();
   }

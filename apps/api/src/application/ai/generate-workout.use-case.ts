@@ -44,10 +44,11 @@ export class GenerateWorkoutUseCase {
         { role: "system", content: systemMessage },
         { role: "user", content: userMessage },
       ],
-      model: "gpt-4o",
     });
 
-    const generated = JSON.parse(response.content) as GeneratedWorkout;
+    const generated = JSON.parse(
+      this.extractJson(response.content),
+    ) as GeneratedWorkout;
     await this.persistWorkout(athleteId, generated, exercises);
   }
 
@@ -96,6 +97,11 @@ export class GenerateWorkoutUseCase {
         });
       }
     }
+  }
+
+  private extractJson(text: string): string {
+    const match = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+    return match ? match[1].trim() : text.trim();
   }
 
   private parseReps(reps: string): number {

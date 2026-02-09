@@ -4,14 +4,16 @@ import type { IAiClientRepository } from "../../domain/ai/ai-client.repository";
 
 export class OpenAiClientRepository implements IAiClientRepository {
   private readonly client: OpenAI;
+  private readonly model: string;
 
-  constructor(apiKey: string) {
+  constructor(apiKey: string, model: string) {
     this.client = new OpenAI({ apiKey });
+    this.model = model;
   }
 
   async chat(request: ChatRequest): Promise<ChatResponse> {
     const completion = await this.client.chat.completions.create({
-      model: request.model,
+      model: this.model,
       messages: request.messages,
     });
 

@@ -15,6 +15,7 @@ export const aiPlugin = ({ authMiddleware, generateWorkout }: AiPluginDeps) =>
         await generateWorkout.execute(user.id);
         set.status = 201;
       } catch (error: unknown) {
+        console.error("Error generating workout:", error);
         if (error instanceof Error) {
           if (error.message === "Anamnesis not found for athlete") {
             set.status = 404;

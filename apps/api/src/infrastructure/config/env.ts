@@ -14,6 +14,7 @@ const EnvSchema = Type.Object({
   SUPABASE_ANON_KEY: Type.String(),
   SUPABASE_SERVICE_ROLE_KEY: Type.String(),
   AI_CLIENT: Type.Optional(AiClientEnum),
+  AI_MODEL: Type.Optional(Type.String()),
   XAI_API_KEY: Type.Optional(Type.String()),
   OPENAI_API_KEY: Type.Optional(Type.String()),
   GEMINI_API_KEY: Type.Optional(Type.String()),
