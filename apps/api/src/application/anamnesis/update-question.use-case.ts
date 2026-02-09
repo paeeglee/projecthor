@@ -2,6 +2,7 @@ import type { IAnamnesisGroupRepository } from "../../domain/anamnesis/anamnesis
 import type { AnamnesisQuestion } from "../../domain/anamnesis/anamnesis-question.entity";
 import type { IAnamnesisQuestionRepository } from "../../domain/anamnesis/anamnesis-question.repository";
 import type { IAnamnesisTemplateRepository } from "../../domain/anamnesis/anamnesis-template.repository";
+import { PROFILE_FIELD_TYPES } from "../../domain/profile/profile-fields";
 import { generateSchemas } from "./schema-generator";
 
 export class UpdateQuestionUseCase {
@@ -19,8 +20,13 @@ export class UpdateQuestionUseCase {
       options?: string[];
       required?: boolean;
       displayOrder?: number;
+      profileField?: string | null;
     },
   ): Promise<AnamnesisQuestion> {
+    if (data.profileField && !(data.profileField in PROFILE_FIELD_TYPES)) {
+      throw new Error(`Invalid profile field: ${data.profileField}`);
+    }
+
     const question = await this.questionRepository.update(id, data);
 
     const group = await this.groupRepository.findById(question.groupId);

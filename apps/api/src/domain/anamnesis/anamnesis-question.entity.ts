@@ -14,5 +14,6 @@ export interface AnamnesisQuestion {
   options: string[] | null;
   required: boolean;
   displayOrder: number;
+  profileField: string | null;
   createdAt: Date;
 }

@@ -65,4 +65,25 @@ export class ProfileRepository implements IProfileRepository {
 
     return toProfile(data);
   }
+
+  async updateFields(
+    userId: string,
+    fields: Partial<Pick<Profile, "bodyWeight">>,
+  ): Promise<void> {
+    const dbData: Record<string, unknown> = {
+      updated_at: new Date().toISOString(),
+    };
+
+    if (fields.bodyWeight !== undefined) {
+      dbData.body_weight = fields.bodyWeight;
+      dbData.body_weight_updated_at = new Date().toISOString();
+    }
+
+    const { error } = await this.supabase
+      .from("profiles")
+      .update(dbData)
+      .eq("user_id", userId);
+
+    if (error) throw error;
+  }
 }

@@ -127,16 +127,28 @@ export const anamnesisPlugin = (useCases: AnamnesisUseCases) =>
     .post(
       "/groups/:id/questions",
       async ({ params, body, set }) => {
-        const question = await useCases.createQuestion.execute({
-          groupId: params.id,
-          label: body.label,
-          fieldType: body.fieldType,
-          options: body.options,
-          required: body.required,
-          displayOrder: body.displayOrder,
-        });
-        set.status = 201;
-        return question;
+        try {
+          const question = await useCases.createQuestion.execute({
+            groupId: params.id,
+            label: body.label,
+            fieldType: body.fieldType,
+            options: body.options,
+            required: body.required,
+            displayOrder: body.displayOrder,
+            profileField: body.profileField,
+          });
+          set.status = 201;
+          return question;
+        } catch (error: unknown) {
+          if (
+            error instanceof Error &&
+            error.message.startsWith("Invalid profile field")
+          ) {
+            set.status = 400;
+            return { error: error.message };
+          }
+          throw error;
+        }
       },
       { params: GroupIdParams, body: CreateQuestionBody },
     )
@@ -146,6 +158,13 @@ export const anamnesisPlugin = (useCases: AnamnesisUseCases) =>
         try {
           return await useCases.updateQuestion.execute(params.id, body);
         } catch (error: unknown) {
+          if (
+            error instanceof Error &&
+            error.message.startsWith("Invalid profile field")
+          ) {
+            set.status = 400;
+            return { error: error.message };
+          }
           if (
             error !== null &&
             typeof error === "object" &&

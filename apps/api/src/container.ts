@@ -144,6 +144,8 @@ const getFormSchemaUseCase = new GetFormSchemaUseCase(
 const submitResponseUseCase = new SubmitResponseUseCase(
   anamnesisResponseRepository,
   anamnesisTemplateRepository,
+  anamnesisQuestionRepository,
+  profileRepository,
 );
 
 const workoutPlanRepository = new WorkoutPlanRepository(supabaseAdmin);

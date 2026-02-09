@@ -8,4 +8,8 @@ export interface IProfileRepository {
     bodyWeight?: number,
   ): Promise<Profile>;
   updateBodyWeight(userId: string, bodyWeight: number): Promise<Profile>;
+  updateFields(
+    userId: string,
+    fields: Partial<Pick<Profile, "bodyWeight">>,
+  ): Promise<void>;
 }

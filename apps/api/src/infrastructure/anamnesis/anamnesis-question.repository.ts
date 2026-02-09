@@ -14,6 +14,7 @@ export class AnamnesisQuestionRepository
     options?: string[];
     required?: boolean;
     displayOrder: number;
+    profileField?: string | null;
   }): Promise<AnamnesisQuestion> {
     const { data, error } = await this.supabase
       .from("anamnesis_questions")
@@ -24,6 +25,7 @@ export class AnamnesisQuestionRepository
         options: input.options ?? null,
         required: input.required ?? false,
         display_order: input.displayOrder,
+        profile_field: input.profileField ?? null,
       })
       .select()
       .single();
@@ -76,6 +78,7 @@ export class AnamnesisQuestionRepository
       options?: string[];
       required?: boolean;
       displayOrder?: number;
+      profileField?: string | null;
     },
   ): Promise<AnamnesisQuestion> {
     const dbData: Record<string, unknown> = {};
@@ -87,6 +90,8 @@ export class AnamnesisQuestionRepository
       dbData.required = updateData.required;
     if (updateData.displayOrder !== undefined)
       dbData.display_order = updateData.displayOrder;
+    if (updateData.profileField !== undefined)
+      dbData.profile_field = updateData.profileField;
 
     const { data, error } = await this.supabase
       .from("anamnesis_questions")
@@ -117,6 +122,7 @@ export class AnamnesisQuestionRepository
       options: data.options as string[] | null,
       required: data.required as boolean,
       displayOrder: data.display_order as number,
+      profileField: (data.profile_field as string) ?? null,
       createdAt: new Date(data.created_at as string),
     };
   }

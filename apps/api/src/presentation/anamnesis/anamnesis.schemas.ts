@@ -46,6 +46,7 @@ export const CreateQuestionBody = Type.Object({
   options: Type.Optional(Type.Array(Type.String())),
   required: Type.Optional(Type.Boolean()),
   displayOrder: Type.Number({ minimum: 0 }),
+  profileField: Type.Optional(Type.Union([Type.String(), Type.Null()])),
 });
 
 export const UpdateQuestionBody = Type.Object(
@@ -64,6 +65,7 @@ export const UpdateQuestionBody = Type.Object(
     options: Type.Optional(Type.Array(Type.String())),
     required: Type.Optional(Type.Boolean()),
     displayOrder: Type.Optional(Type.Number({ minimum: 0 })),
+    profileField: Type.Optional(Type.Union([Type.String(), Type.Null()])),
   },
   { minProperties: 1 },
 );
