@@ -1,4 +1,5 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import { ImageGalleryOverlay } from "./image-gallery-overlay";
 
 export interface SetRow {
   reps: number;
@@ -28,6 +29,7 @@ export function ExerciseCard({
   onSetChange,
   onSetComplete,
 }: ExerciseCardProps) {
+  const [showGallery, setShowGallery] = useState(false);
   const completedCount = sets.filter((s) => s.completed).length;
   const totalSets = sets.length;
   const progressPercent =
@@ -45,11 +47,17 @@ export function ExerciseCard({
     <div className="rounded-xl bg-surface p-4">
       <div className="flex items-center gap-3">
         {images?.[0] ? (
-          <img
-            src={`${import.meta.env.VITE_IMAGE_URL}${images[0]}`}
-            alt={exerciseName}
-            className="size-14 shrink-0 rounded-lg object-cover"
-          />
+          <button
+            type="button"
+            onClick={() => setShowGallery(true)}
+            className="shrink-0"
+          >
+            <img
+              src={`${import.meta.env.VITE_IMAGE_URL}${images[0]}`}
+              alt={exerciseName}
+              className="size-14 rounded-lg object-cover"
+            />
+          </button>
         ) : (
           <div className="size-14 shrink-0 rounded-lg bg-surface-light" />
         )}
@@ -118,6 +126,13 @@ export function ExerciseCard({
           </div>
         ))}
       </div>
+
+      {showGallery && images && images.length > 0 && (
+        <ImageGalleryOverlay
+          images={images}
+          onClose={() => setShowGallery(false)}
+        />
+      )}
     </div>
   );
 }

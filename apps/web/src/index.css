@@ -28,6 +28,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 [data-sonner-toaster] {
   --width: 100% !important;
   bottom: 0 !important;
