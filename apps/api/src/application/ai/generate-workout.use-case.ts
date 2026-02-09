@@ -121,7 +121,7 @@ export class GenerateWorkoutUseCase {
       "You are a professional fitness trainer AI. Generate a structured workout plan from the athlete's anamnesis.",
       "ONLY use exercises from this catalog (TOON):",
       catalogToon,
-      'Respond ONLY with valid JSON: {"name":"Plan name","groups":[{"name":"Treino A","exercises":[{"exerciseSlug":"slug","sets":3,"reps":"8-12","restSeconds":60,"notes":"optional"}]}]}',
+      'Respond ONLY with valid JSON: {"name":"Plan name","groups":[{"name":"A","exercises":[{"exerciseSlug":"slug","sets":3,"reps":"8-12","restSeconds":60,"notes":"optional"}]}]}',
       "Rules: match exercises to athlete's level/goals/condition; consider injuries/limitations; appropriate sets/reps/rest; notes only when relevant.",
     ].join("\n");
   }
