@@ -8,6 +8,7 @@ import type { IExerciseRepository } from "../../domain/exercise/exercise.reposit
 import type { IWorkoutExerciseRepository } from "../../domain/workout/workout-exercise.repository";
 import type { IWorkoutGroupRepository } from "../../domain/workout/workout-group.repository";
 import type { IWorkoutPlanRepository } from "../../domain/workout/workout-plan.repository";
+import { findClosestSlug } from "../../infrastructure/ai/slug-matcher";
 import { jsonToToon } from "../../infrastructure/ai/toon-encoder";
 
 export class GenerateWorkoutUseCase {
@@ -59,11 +60,21 @@ export class GenerateWorkoutUseCase {
   ): Promise<void> {
     const slugToId = new Map(exercises.map((e) => [e.slug, e.id]));
 
-    // Validate all slugs exist before writing anything
+    const allSlugs = [...slugToId.keys()];
+
+    // Validate all slugs exist before writing anything, with fuzzy fallback
     for (const group of generated.groups) {
       for (const ex of group.exercises) {
         if (!slugToId.has(ex.exerciseSlug)) {
-          throw new Error(`Exercise not found: ${ex.exerciseSlug}`);
+          const closest = findClosestSlug(ex.exerciseSlug, allSlugs);
+          if (closest) {
+            console.warn(
+              `[slug-matcher] Corrected "${ex.exerciseSlug}" → "${closest}"`,
+            );
+            ex.exerciseSlug = closest;
+          } else {
+            throw new Error(`Exercise not found: ${ex.exerciseSlug}`);
+          }
         }
       }
     }
@@ -128,6 +139,7 @@ export class GenerateWorkoutUseCase {
       "ONLY use exercises from this catalog (TOON):",
       catalogToon,
       'Respond ONLY with valid JSON: {"name":"Plan name","groups":[{"name":"A","exercises":[{"exerciseSlug":"slug","sets":3,"reps":"8-12","restSeconds":60,"notes":"optional"}]}]}',
+      'CRITICAL: The "exerciseSlug" value MUST be copied exactly from the "slug" column above. Do NOT invent, abbreviate, or modify slugs. If the slug in the catalog is "wide-grip-lat-pulldown", you must use "wide-grip-lat-pulldown", NOT "lat-pulldown".',
       "Rules: match exercises to athlete's level/goals/condition; consider injuries/limitations; appropriate sets/reps/rest; notes only when relevant.",
     ].join("\n");
   }
