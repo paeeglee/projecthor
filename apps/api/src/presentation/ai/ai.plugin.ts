@@ -25,6 +25,7 @@ export const aiPlugin = ({ authMiddleware, generateWorkout }: AiPluginDeps) =>
             return { error: error.message };
           }
         }
-        throw error;
+        set.status = 400;
+        return { error: "Failed to generate workout. Please try again later." };
       }
     });
