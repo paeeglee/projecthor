@@ -5,6 +5,7 @@ import { HomePage } from "@/modules/home/components/home-page";
 import { OnboardingPage } from "@/modules/onboarding/components/onboarding-page";
 import { PreparingPage } from "@/modules/preparing/components/preparing-page";
 import { AppLayout } from "@/modules/shared/components/app-layout";
+import { WorkoutPreviewPage } from "@/modules/workout/components/workout-preview-page";
 import { WorkoutSessionPage } from "@/modules/workout/components/workout-session-page";
 
 export const router = createBrowserRouter([
@@ -34,6 +35,10 @@ export const router = createBrowserRouter([
       {
         path: "/home",
         element: <HomePage />,
+      },
+      {
+        path: "/workout/:groupId/preview",
+        element: <WorkoutPreviewPage />,
       },
       {
         path: "/workout/:groupId",

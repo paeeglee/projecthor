@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Link } from "react-router";
 import { getActivePlan } from "@/modules/home/services/dashboard.service";
 import { ActivePlanCarouselSkeleton } from "./active-plan-carousel-skeleton";
 
@@ -61,7 +62,7 @@ export function ActivePlanCarousel({
         {groups.map((group) => (
           <div
             key={group.id}
-            className="min-w-full shrink-0 snap-start overflow-hidden px-4"
+            className="flex min-w-full shrink-0 snap-start flex-col overflow-hidden px-4"
           >
             <span className="text-xs font-semibold tracking-wider text-text-muted uppercase">
               {group.label}
@@ -86,6 +87,14 @@ export function ActivePlanCarousel({
                 </li>
               ))}
             </ul>
+            <div className="mt-auto pt-3">
+              <Link
+                to={`/workout/${group.id}/preview`}
+                className="block w-full rounded-md border border-border py-2 text-center text-sm font-medium text-text hover:bg-surface-light transition-colors"
+              >
+                Ver Treino
+              </Link>
+            </div>
           </div>
         ))}
       </div>
