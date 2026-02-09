@@ -38,7 +38,11 @@ import { RemoveWorkoutGroupUseCase } from "./application/workout/remove-workout-
 import { UpdateGroupExerciseUseCase } from "./application/workout/update-group-exercise.use-case";
 import { UpdateWorkoutGroupUseCase } from "./application/workout/update-workout-group.use-case";
 import { UpdateWorkoutPlanUseCase } from "./application/workout/update-workout-plan.use-case";
+import type { IAiClientRepository } from "./domain/ai/ai-client.repository";
+import { GeminiClientRepository } from "./infrastructure/ai/gemini-client.repository";
 import { MockAiClientRepository } from "./infrastructure/ai/mock-client.repository";
+import { OpenAiClientRepository } from "./infrastructure/ai/openai-client.repository";
+import { XaiClientRepository } from "./infrastructure/ai/xai-client.repository";
 import { AnamnesisGroupRepository } from "./infrastructure/anamnesis/anamnesis-group.repository";
 import { AnamnesisQuestionRepository } from "./infrastructure/anamnesis/anamnesis-question.repository";
 import { AnamnesisResponseRepository } from "./infrastructure/anamnesis/anamnesis-response.repository";
@@ -224,9 +228,23 @@ const getRelativeStrengthUseCase = new GetRelativeStrengthUseCase(
   relativeStrengthRepository,
 );
 
-const mockAiClientRepository = new MockAiClientRepository();
+function createAiClient(): IAiClientRepository {
+  const aiClient = env.AI_CLIENT ?? "mock";
+  switch (aiClient) {
+    case "openai":
+      return new OpenAiClientRepository(env.OPENAI_API_KEY as string);
+    case "gemini":
+      return new GeminiClientRepository(env.GEMINI_API_KEY as string);
+    case "grok":
+      return new XaiClientRepository(env.XAI_API_KEY as string);
+    case "mock":
+      return new MockAiClientRepository();
+  }
+}
+
+const aiClientRepository = createAiClient();
 const generateWorkoutUseCase = new GenerateWorkoutUseCase(
-  mockAiClientRepository,
+  aiClientRepository,
   anamnesisResponseRepository,
   anamnesisQuestionRepository,
   exerciseRepository,
