@@ -13,8 +13,11 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
 COPY apps/web/ ./apps/web/
 COPY tsconfig.json ./
+
 ARG VITE_BASE_URL
 ARG VITE_ANAMNESIS_TEMPLATE_ID
+ARG VITE_IMAGE_URL
+
 ENV VITE_BASE_URL=$VITE_BASE_URL
 ENV VITE_ANAMNESIS_TEMPLATE_ID=$VITE_ANAMNESIS_TEMPLATE_ID
 ENV VITE_IMAGE_URL=$VITE_IMAGE_URL
